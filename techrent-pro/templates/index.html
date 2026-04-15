@@ -1,0 +1,71 @@
+{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block
+content %}
+<h1>Dashboard</h1>
+
+<div
+  style="
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  "
+>
+  <div style="border: 1px solid #ddd; padding: 20px">
+    <h3>Feature 1</h3>
+    <p>Amazing feature description</p>
+  </div>
+  <div style="border: 1px solid #ddd; padding: 20px">
+    <h3>Feature 2</h3>
+    <p>Another great feature</p>
+  </div>
+  <div style="border: 1px solid #ddd; padding: 20px">
+    <h3>Feature 3</h3>
+    <p>Yet another feature</p>
+  </div>
+  <div style="border: 1px solid #ddd; padding: 20px">
+    <h3>Feature 4</h3>
+    <p>Yet another feature</p>
+  </div>
+</div>
+
+<!-- Table -->
+<div style="margin-top: 40px">
+  <h2>Recent Rentals</h2>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 10px">
+    <thead>
+      <tr>
+        <th style="border: 1px solid #ddd; padding: 8px">ID</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Customer</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Equipment</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Start</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px">1</td>
+        <td style="border: 1px solid #ddd; padding: 8px">John Doe</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Laptop</td>
+        <td style="border: 1px solid #ddd; padding: 8px">2024-06-01</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px">2</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Jane Smith</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Laptop</td>
+        <td style="border: 1px solid #ddd; padding: 8px">2024-06-02</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Inactive</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Action Buttons -->
+<div style="margin-top: 20px">
+  <button style="padding: 10px 20px; margin-right: 10px">
+    + Add Equipment
+  </button>
+  <button style="padding: 10px 20px; margin-right: 10px">+ New Rental</button>
+  <button style="padding: 10px 20px">+ Customer</button>
+</div>
+{% endblock %}
