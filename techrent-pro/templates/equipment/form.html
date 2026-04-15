@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Add Equipment{% endblock %}
+{% block content %}
+<h1>Add New Equipment</h1>
+<form method="post" action="/equipment/add">
+    <div style="margin-bottom: 15px">
+        <label for="name" style="display: block; margin-bottom: 5px">Name:</label>
+        <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
+        />
+    </div>
+    <div style="margin-bottom: 15px">
+        <label for="category" style="display: block; margin-bottom: 5px">Category:</label>
+        <select
+        id="category"
+        name="category"
+        required
+        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
+        >
+        <option value="">Select Category</option>
+        <option value="laptops">Laptops</option>
+        <option value="cameras">Cameras</option>
+        <option value="projectors">Projectors</option>
+        </select>
+    </div>
+    <div style="margin-bottom: 15px">
+        <label for="rate" style="display: block; margin-bottom: 5px">Rate per day:</label>
+        <input
+        type="number"
+        id="rate"
+        name="rate"
+        required
+        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
+        />
+    </div>
+    <button
+        type="submit"
+        style="
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        "
+    >
+        Add Equipment
+    </button>
+</form>
+{% endblock %}
