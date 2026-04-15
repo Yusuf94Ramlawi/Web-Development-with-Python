@@ -1,10 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
+from routes.rentals import rentals_bp
 
 app = Flask(__name__)
 
 @app.route('/')
 def dashboard():
     return render_template('index.html')
+
+app.register_blueprint(rentals_bp)
+
 
 @app.route('/equipment')
 def equipment():
@@ -50,17 +54,6 @@ def edit_customer(id):
 @app.route('/customers/delete/<int:id>', methods=['POST'])
 def delete_customer(id):
     return redirect(url_for('customers'))
-
-
-@app.route('/rentals')
-def rentals():
-    return render_template('rentals/list.html')
-
-@app.route('/rentals/add', methods=['GET', 'POST'])
-def add_rental():
-    if request.method == 'POST':
-        return redirect(url_for('rentals'))
-    return render_template('rentals/form.html')
 
 @app.route('/reports')
 def reports():
