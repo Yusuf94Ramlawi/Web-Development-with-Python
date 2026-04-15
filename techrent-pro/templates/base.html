@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}TechRent Pro{% endblock %}</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+      }
+
+      .navbar {
+        background: #333;
+        color: white;
+      }
+
+      .navbar ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+
+      .navbar a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .footer {
+        background: #f4f4f4;
+        padding: 20px;
+        text-align: center;
+        margin-top: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+        <span style="font-weight: bold; font-size: 1.2em;">TechRent Pro</span>
+      <ul>
+        <li><a href="/">Dashboard</a></li>
+        <li><a href="/equipment">Equipment</a></li>
+        <li><a href="/customers">Customers</a></li>
+        <li><a href="/rentals">Rentals</a></li>
+        <li><a href="/api-docs">API Docs</a></li>
+      </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+      {% block content %}
+      <!-- Child templates will inject content here -->
+      {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      {% block footer %}
+      <p>&copy; 2026 My Website. All rights reserved.</p>
+      {% endblock %}
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>
