@@ -62,6 +62,9 @@ def add_rental():
         return redirect(url_for('rentals'))
     return render_template('rentals/form.html')
 
+@app.route('/reports')
+def reports():
+    return render_template('reports/index.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,0 +1,262 @@
+{% extends "base.html" %} {% block title %}Reports{% endblock %} {% block
+content %}
+<div>
+  <h1>Reports & Analytics</h1>
+</div>
+
+<div>
+  <h2>Revenue Summary</h2>
+  <div style="display: flex; gap: 20px; margin-bottom: 40px">
+    <div
+      style="
+        flex: 1;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      "
+    >
+      <h3>Total Completed</h3>
+      <p style="font-size: 1.5em; font-weight: bold">$12,345</p>
+    </div>
+    <div
+      style="
+        flex: 1;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      "
+    >
+      <h3>Active Pipeline</h3>
+      <p style="font-size: 1.5em; font-weight: bold">$2,345</p>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 20px">
+    <div style="flex: 1">
+      <h2>Top Equipment by Rentals</h2>
+      <table style="width: 100%; border-collapse: collapse">
+        <thead>
+          <tr>
+            <th
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+              "
+            >
+              Equipment
+            </th>
+            <th
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              Rentals
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="border-bottom: 1px solid #ddd; padding: 8px">
+              Laptop A
+            </td>
+            <td
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              150
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid #ddd; padding: 8px">
+              Camera B
+            </td>
+            <td
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              120
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid #ddd; padding: 8px">
+              Projector C
+            </td>
+            <td
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              90
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="flex: 1">
+      <h2>Top Customers by Spend</h2>
+      <table style="width: 100%; border-collapse: collapse">
+        <thead>
+          <tr>
+            <th
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+              "
+            >
+              Customer
+            </th>
+            <th
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              Total Spend
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="border-bottom: 1px solid #ddd; padding: 8px">
+              Alice Smith
+            </td>
+            <td
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              $3,000
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid #ddd; padding: 8px">
+              Bob Johnson
+            </td>
+            <td
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              $2,500
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid #ddd; padding: 8px">
+              Charlie Lee
+            </td>
+            <td
+              style="
+                border-bottom: 1px solid #ddd;
+                padding: 8px;
+                text-align: right;
+              "
+            >
+              $2,000
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="flex: 1; margin-top: 20px">
+    <h2>Rental Status Distribution</h2>
+    <div style="margin-bottom: 10px">
+      <span>Active</span>
+      <div
+        style="
+          background-color: #e9ecef;
+          border-radius: 4px;
+          overflow: hidden;
+          height: 20px;
+          margin-top: 5px;
+        "
+      >
+        <div
+          style="
+            width: 60%;
+            background-color: #28a745;
+            height: 100%;
+            text-align: center;
+            color: white;
+            font-size: 0.8em;
+          "
+        >
+          60%
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom: 10px">
+      <span>Returned</span>
+      <div
+        style="
+          background-color: #e9ecef;
+          border-radius: 4px;
+          overflow: hidden;
+          height: 20px;
+          margin-top: 5px;
+        "
+      >
+        <div
+          style="
+            width: 30%;
+            background-color: #007bff;
+            height: 100%;
+            text-align: center;
+            color: white;
+            font-size: 0.8em;
+          "
+        >
+          30%
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom: 10px">
+      <span>Overdue</span>
+      <div
+        style="
+          background-color: #e9ecef;
+          border-radius: 4px;
+          overflow: hidden;
+          height: 20px;
+          margin-top: 5px;
+        "
+      >
+        <div
+          style="
+            width: 10%;
+            background-color: #dc3545;
+            height: 100%;
+            text-align: center;
+            color: white;
+            font-size: 0.8em;
+          "
+        >
+          10%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+</div>
