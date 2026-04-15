@@ -1,8 +1,13 @@
 {% extends "base.html" %} {% block title %}rentals{% endblock %} {% block
 content %}
+{% set status_classes = {
+  'Active': 'bg-success',
+  'Returned': 'bg-secondary',
+  'Overdue': 'bg-danger'
+} %}
 <div>
   <h1>Rentals</h1>
-  <a href="/rentals/add">
+  <a href="/rentals/new">
     <button
       style="
         margin-bottom: 20px;
@@ -21,16 +26,19 @@ content %}
 
 <!-- Category Filter with search-->
 <span> Filters: </span>
-<div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
-  <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px">
-    <option value="">All Categories</option>
+<form method="GET" action="/rentals" style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
+  <select name="category" onchange="this.form.submit()" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px">
+    <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
     {% for category in categories %}
-    <option value="{{ category|lower|replace(' ', '-') }}">
+    <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
       {{ category }}
     </option>
     {% endfor %}
   </select>
-</div>
+  <noscript>
+    <button type="submit" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa; cursor: pointer;">Apply</button>
+  </noscript>
+</form>
 
 <!-- rentals Table -->
 <div>
@@ -80,10 +88,6 @@ content %}
   </table>
 </div>
 
-{% endblock %} {% set status_classes = {
-  'Active': 'bg-success',
-  'Returned': 'bg-secondary',
-  'Overdue': 'bg-danger'
-} %}
+{% endblock %}
 
 

@@ -54,22 +54,41 @@ def validate_rental_payload(payload, partial=False):
 
 @rentals_bp.route("/rentals", methods=["GET"])
 def get_all_rentals():
+    selected_category = request.args.get("category", "").strip()
+    
     rentals = []
     for rental in db.rental_data.values():
         customer = db.customer_data.get(rental["customer_id"], {})
         equipment = db.equipment_data.get(rental["equipment_id"], {})
+        equipment_category = equipment.get("category", "Uncategorized")
 
         rentals.append({
             "id": rental["id"],
             "customer_name": customer.get("name", "Unknown Customer"),
             "equipment_name": equipment.get("name", "Unknown Equipment"),
-            "equipment_category": equipment.get("category", "Uncategorized"),
+            "equipment_category": equipment_category,
             "start_date": rental["start_date"],
             "end_date": rental["end_date"],
-            "status": rental["status"].title()
+            "status": rental["status"].title(),
+            "total_cost": rental.get("total_cost", 0.0)
         })
+
     categories = sorted({rental["equipment_category"] for rental in rentals})
-    return render_template("rentals/list.html", rentals=rentals, categories=categories, row_limit=10)
+
+    if selected_category:
+        rentals = [
+            rental
+            for rental in rentals
+            if rental["equipment_category"].lower() == selected_category.lower()
+        ]
+
+    return render_template(
+        "rentals/list.html",
+        rentals=rentals,
+        categories=categories,
+        selected_category=selected_category,
+        row_limit=10,
+    )
 
 
 @rentals_bp.route("/rentals/new", methods=["GET", "POST"])
