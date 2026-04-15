@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Add rentals{% endblock %}
+{% block content %}
+<h1>Add New rentals</h1>
+<form method="post" action="/rentals/add">
+    <div style="margin-bottom: 15px">
+        <label for="customer" style="display: block; margin-bottom: 5px">Customer:</label>
+        <input
+        type="text"
+        id="customer"
+        name="customer"
+        required
+        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
+        />
+    </div>
+    <div style="margin-bottom: 15px">
+        <label for="equipment" style="display: block; margin-bottom: 5px">Equipment:</label>
+        <input
+        type="text"
+        id="equipment"
+        name="equipment"
+        required
+        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
+        />
+    </div>
+    <div style="margin-bottom: 15px">
+        <label for="dates" style="display: block; margin-bottom: 5px">Dates:</label>
+        <input
+        type="text"
+        id="dates"
+        name="dates"
+        required
+        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
+        />
+    </div>
+    <button
+        type="submit"
+        style="
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        "
+    >
+        Add rental
+    </button>
+</form>
+{% endblock %}

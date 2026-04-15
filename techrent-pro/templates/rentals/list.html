@@ -1,0 +1,86 @@
+{% extends "base.html" %} {% block title %}rentals{% endblock %} {% block
+content %}
+<div>
+  <h1>Rentals</h1>
+  <a href="/rentals/add">
+    <button
+      style="
+        margin-bottom: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      "
+    >
+      + New Rental
+    </button>
+  </a>
+</div>
+
+<!-- Category Filter with search-->
+<span> Filters: </span>
+<div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
+  <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px">
+    <option value="">All Categories</option>
+    <option value="laptops">Laptops</option>
+    <option value="cameras">Cameras</option>
+    <option value="projectors">Projectors</option>
+  </select>
+</div>
+
+<!-- rentals Table -->
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th style="border: 1px solid #ddd; padding: 8px">ID</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Customer</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Equipment</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Dates</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px">1</td>
+        <td style="border: 1px solid #ddd; padding: 8px">John Doe</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Laptop</td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          2024-06-01 to 2024-06-10
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px">2</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Jane Smith</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Camera</td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          2024-06-05 to 2024-06-12
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px">2</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Jane Smith</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Camera</td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          2024-06-05 to 2024-06-12
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ddd; padding: 8px">2</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Jane Smith</td>
+        <td style="border: 1px solid #ddd; padding: 8px">Camera</td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          2024-06-05 to 2024-06-12
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

@@ -52,5 +52,16 @@ def delete_customer(id):
     return redirect(url_for('customers'))
 
 
+@app.route('/rentals')
+def rentals():
+    return render_template('rentals/list.html')
+
+@app.route('/rentals/add', methods=['GET', 'POST'])
+def add_rental():
+    if request.method == 'POST':
+        return redirect(url_for('rentals'))
+    return render_template('rentals/form.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
