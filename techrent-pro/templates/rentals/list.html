@@ -24,9 +24,11 @@ content %}
 <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
   <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px">
     <option value="">All Categories</option>
-    <option value="laptops">Laptops</option>
-    <option value="cameras">Cameras</option>
-    <option value="projectors">Projectors</option>
+    {% for category in categories %}
+    <option value="{{ category|lower|replace(' ', '-') }}">
+      {{ category }}
+    </option>
+    {% endfor %}
   </select>
 </div>
 
@@ -39,48 +41,49 @@ content %}
         <th style="border: 1px solid #ddd; padding: 8px">Customer</th>
         <th style="border: 1px solid #ddd; padding: 8px">Equipment</th>
         <th style="border: 1px solid #ddd; padding: 8px">Dates</th>
+        <th style="border: 1px solid #ddd; padding: 8px">Total Cost</th>
         <th style="border: 1px solid #ddd; padding: 8px">Status</th>
       </tr>
     </thead>
     <tbody>
+      {% if rentals %} {% for rental in rentals %}
       <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">1</td>
-        <td style="border: 1px solid #ddd; padding: 8px">John Doe</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Laptop</td>
+        <td style="border: 1px solid #ddd; padding: 8px">{{ rental.id }}</td>
         <td style="border: 1px solid #ddd; padding: 8px">
-          2024-06-01 to 2024-06-10
+          {{ rental.customer_name }}
         </td>
-        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          {{ rental.equipment_name }}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          {{ rental.start_date }} to {{ rental.end_date }}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          ${{ rental.total_cost }}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          <span
+            class="badge {{ status_classes.get(rental.status, 'bg-warning text-dark') }}"
+          >
+            {{ rental.status }}
+          </span>
+        </td>
       </tr>
+      {% endfor %} {% else %}
       <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">2</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Jane Smith</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Camera</td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          2024-06-05 to 2024-06-12
+        <td style="border: 1px solid #ddd; padding: 8px" colspan="6">
+          No rentals found.
         </td>
-        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
       </tr>
-      <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">2</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Jane Smith</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Camera</td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          2024-06-05 to 2024-06-12
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
-      </tr>
-      <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">2</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Jane Smith</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Camera</td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          2024-06-05 to 2024-06-12
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">Active</td>
-      </tr>
+      {% endif %}
     </tbody>
   </table>
 </div>
 
-{% endblock %}
+{% endblock %} {% set status_classes = {
+  'Active': 'bg-success',
+  'Returned': 'bg-secondary',
+  'Overdue': 'bg-danger'
+} %}
+
+
