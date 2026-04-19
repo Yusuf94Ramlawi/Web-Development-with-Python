@@ -1,6 +1,5 @@
-import datetime
 import db
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, render_template
 
 dashboard = Blueprint("dashboard", __name__)
 

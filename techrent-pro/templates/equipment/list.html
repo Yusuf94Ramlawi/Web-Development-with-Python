@@ -22,10 +22,9 @@ block content %}
 <!-- Category Filter with search-->
 <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
   <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px">
-    <option value="">All Categories</option>
-    <option value="laptops">Laptops</option>
-    <option value="cameras">Cameras</option>
-    <option value="projectors">Projectors</option>
+    {% for category in categories %}
+    <option value="{{ category }}">{{ category }}</option>
+    {% endfor %}
   </select>
   <input
     type="text"
@@ -66,44 +65,54 @@ block content %}
       </tr>
     </thead>
     <tbody>
+      {% for equipment in equipment_list.values() %}
       <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">1</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Dell XPS 13</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Laptop</td>
-        <td style="border: 1px solid #ddd; padding: 8px">$50</td>
-        <td style="border: 1px solid #ddd; padding: 8px">10</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Yes</td>
+        <td style="border: 1px solid #ddd; padding: 8px">{{ equipment.id }}</td>
         <td style="border: 1px solid #ddd; padding: 8px">
-          <a href="/equipment/1"><button style="padding: 5px 10px; margin-right: 5px">View</button></a>
-          <a href="/equipment/edit/1"><button style="padding: 5px 10px; margin-right: 5px">Edit</button></a>
-          <form action="/equipment/delete/1" method="post" style="display: inline;">
+          {{ equipment.name }}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          {{ equipment.category }}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          ${{ equipment.rate }}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          {{ equipment.quantity }}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          {% if equipment.available %}
+          <span class="badge bg-success text-light">Yes</span>
+          {% else %}
+          <span class="badge bg-danger text-light">No</span>
+          {% endif %}
+        </td>
+        <td style="border: 1px solid #ddd; padding: 8px">
+          <a href="/equipment/{{ equipment.id }}"
+            ><button style="padding: 5px 10px; margin-right: 5px">
+              View
+            </button></a
+          >
+          <a href="/equipment/edit/{{ equipment.id }}"
+            ><button style="padding: 5px 10px; margin-right: 5px">
+              Edit
+            </button></a
+          >
+          <form
+            action="/equipment/delete/{{ equipment.id }}"
+            method="post"
+            style="display: inline"
+          >
             <button
               type="submit"
               style="padding: 5px 10px; background-color: red; color: white"
             >
               Delete
-          </button>
+            </button>
+          </form>
         </td>
       </tr>
-      <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">2</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Canon EOS R5</td>
-        <td style="border: 1px solid #ddd; padding: 8px">Camera</td>
-        <td style="border: 1px solid #ddd; padding: 8px">$70</td>
-        <td style="border: 1px solid #ddd; padding: 8px">5</td>
-        <td style="border: 1px solid #ddd; padding: 8px">No</td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          <a href="/equipment/2"><button style="padding: 5px 10px; margin-right: 5px">View</button></a>
-          <a href="/equipment/edit/2"><button style="padding: 5px 10px; margin-right: 5px">Edit</button></a>
-          <form action="/equipment/delete/2" method="post" style="display: inline;">
-            <button
-              type="submit"
-              style="padding: 5px 10px; background-color: red; color: white"
-            >
-              Delete
-          </button>
-        </td>
-      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
