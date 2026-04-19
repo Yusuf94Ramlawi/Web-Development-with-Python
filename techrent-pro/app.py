@@ -1,12 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 from routes.rentals import rentals_bp
+from routes.dashboard import dashboard
 
 app = Flask(__name__)
 
-@app.route('/')
-def dashboard():
-    return render_template('index.html')
-
+app.register_blueprint(dashboard)
 app.register_blueprint(rentals_bp)
 
 
