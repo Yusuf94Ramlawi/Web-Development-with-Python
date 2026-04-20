@@ -29,4 +29,18 @@ def delete_equipment(id):
 
 @equipment_bp.route('/<int:id>')
 def view_equipment(id):
-    return render_template('equipment/detail.html', id=id)
+    equipment = db.equipment_data.get(id)
+    customers = db.customer_data
+    rentals = [r for r in db.rental_data.values() if r['equipment_id'] == id]
+    available_quantity = equipment['quantity'] - sum(1 for r in rentals if r['status'] == 'active')
+    equipment_rentals = []
+    for rental in rentals:
+        customer = customers.get(rental['customer_id'])
+        equipment_rentals.append({
+            'customer': customer['name'] if customer else 'Unknown',
+            'start_date': rental['start_date'],
+            'end_date': rental['end_date'],
+            'status': rental['status'],
+            'cost': rental['total_cost']
+        })
+    return render_template('equipment/detail.html', equipment=equipment, rentals=equipment_rentals, available_quantity=available_quantity)
