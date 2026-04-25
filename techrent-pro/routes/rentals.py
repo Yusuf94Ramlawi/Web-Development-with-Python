@@ -8,7 +8,6 @@ rentals_bp = Blueprint("rentals", __name__)
 
 @rentals_bp.route("/rentals", methods=["GET"])
 def get_all_rentals():
-    selected_category = request.args.get("category", "").strip()
     selected_status = request.args.get("status", "").strip().lower()
     search_query = request.args.get("q", "").strip()
 
@@ -17,15 +16,7 @@ def get_all_rentals():
         for rental in rental_service.get_all_rentals()
     ]
 
-    categories = sorted({rental["equipment_category"] for rental in rentals})
     statuses = ["active", "returned", "overdue"]
-
-    if selected_category:
-        rentals = [
-            rental
-            for rental in rentals
-            if rental["equipment_category"].lower() == selected_category.lower()
-        ]
 
     if selected_status:
         rentals = [
@@ -39,10 +30,8 @@ def get_all_rentals():
         rentals = [
             rental
             for rental in rentals
-            if query_lower in str(rental["id"]).lower()
-            or query_lower in rental["customer_name"].lower()
+            if query_lower in rental["customer_name"].lower()
             or query_lower in rental["equipment_name"].lower()
-            or query_lower in rental["equipment_category"].lower()
         ]
 
     pager = Paginator()
@@ -50,9 +39,7 @@ def get_all_rentals():
     return render_template(
         "rentals/list.html",
         rentals=result['data'],
-        categories=categories,
         statuses=statuses,
-        selected_category=selected_category,
         selected_status=selected_status,
         search_query=search_query,
         pagination=result['pagination'],

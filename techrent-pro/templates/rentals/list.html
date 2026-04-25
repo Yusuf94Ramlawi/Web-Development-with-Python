@@ -15,17 +15,6 @@
 
 <form method="GET" action="/rentals" class="row g-2 align-items-end mb-4">
     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
-        <label for="category" class="form-label small">Category</label>
-        <select id="category" name="category" class="form-select" onchange="this.form.submit()">
-            <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
-            {% for category in categories %}
-            <option value="{{ category }}" {% if selected_category==category %}selected{% endif %}>
-                {{ category }}
-            </option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
         <label for="status" class="form-label small">Status</label>
         <select id="status" name="status" class="form-select" onchange="this.form.submit()">
             <option value="" {% if not selected_status %}selected{% endif %}>All Statuses</option>
@@ -107,19 +96,19 @@
                 <ul class="pagination mb-0">
                     <li class="page-item {% if pagination.page == 1 %}disabled{% endif %}">
                         <a class="page-link"
-                            href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&status={{ selected_status|urlencode }}&page={{ pagination.page-1 }}"
+                            href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&page={{ pagination.page-1 }}"
                             tabindex="-1">Previous</a>
                     </li>
                     {% for p in range(1, pagination.total_pages+1) %}
                     <li class="page-item {% if p == pagination.page %}active{% endif %}">
                         <a class="page-link"
-                            href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&status={{ selected_status|urlencode }}&page={{ p }}">{{
+                            href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&page={{ p }}">{{
                             p }}</a>
                     </li>
                     {% endfor %}
                     <li class="page-item {% if pagination.page == pagination.total_pages %}disabled{% endif %}">
                         <a class="page-link"
-                            href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&status={{ selected_status|urlencode }}&page={{ pagination.page+1 }}">Next</a>
+                            href="?q={{ search_query|urlencode }}&status={{ selected_status|urlencode }}&page={{ pagination.page+1 }}">Next</a>
                     </li>
                 </ul>
             </nav>
