@@ -8,89 +8,90 @@
 'overdue': 'bg-danger'
 } %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h2 class="fw-semibold">Dashboard</h2>
+    <h2 class="fw-semibold">Dashboard</h2>
 </div>
 
 <div class="row g-3 mt-3">
-  <div class="col-12 col-sm-6 col-xl-3">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <h2 class="display-6 fw-semibold mb-1">{{ total_equipment }}</h2>
-        <p class="text-muted mb-0">Equipment</p>
-      </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="display-6 fw-semibold mb-1">{{ total_equipment }}</h2>
+                <p class="text-muted mb-0">Equipment</p>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-12 col-sm-6 col-xl-3">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <h2 class="display-6 fw-semibold mb-1">{{ available_equipment }}</h2>
-        <p class="text-muted mb-0">Available</p>
-      </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="display-6 fw-semibold mb-1">{{ available_equipment }}</h2>
+                <p class="text-muted mb-0">Available</p>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-12 col-sm-6 col-xl-3">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <h2 class="display-6 fw-semibold mb-1">{{ total_active_rentals }}</h2>
-        <p class="text-muted mb-0">Active</p>
-      </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="display-6 fw-semibold mb-1">{{ total_active_rentals }}</h2>
+                <p class="text-muted mb-0">Active</p>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-12 col-sm-6 col-xl-3">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <h2 class="display-6 fw-semibold mb-1">{{ total_customers }}</h2>
-        <p class="text-muted mb-0">Customers</p>
-      </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="display-6 fw-semibold mb-1">{{ total_customers }}</h2>
+                <p class="text-muted mb-0">Customers</p>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="card border-0 shadow-sm mt-5">
-  <div class="card-header bg-white border-0 pb-0">
-    <h2 class="h4 mb-0">Recent Rentals</h2>
-  </div>
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Equipment</th>
-            <th>Start</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if recent_rentals %}
-          {% for rental in recent_rentals %}
-          <tr>
-            <td>{{ rental.id }}</td>
-            <td>{{ rental.customer_name }}</td>
-            <td>{{ rental.equipment_name }}</td>
-            <td>{{ rental.start_date }}</td>
-            <td>
-              <span class="badge {{ status_classes.get(rental.status, 'bg-warning text-dark') }} text-capitalize">
-                {{ rental.status }}
-              </span>
-            </td>
-          </tr>
-          {% endfor %}
-          {% else %}
-          <tr>
-            <td colspan="5" class="text-center text-muted py-4">No recent rentals</td>
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
+    <div class="card-header bg-white border-0 pb-0">
+        <h2 class="h4 mb-0">Recent Rentals</h2>
     </div>
-  </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Equipment</th>
+                        <th>Start</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if recent_rentals %}
+                    {% for rental in recent_rentals %}
+                    <tr>
+                        <td>{{ rental.id }}</td>
+                        <td>{{ rental.customer_name }}</td>
+                        <td>{{ rental.equipment_name }}</td>
+                        <td>{{ rental.start_date }}</td>
+                        <td>
+                            <span
+                                class="badge {{ status_classes.get(rental.status, 'bg-warning text-dark') }} text-capitalize">
+                                {{ rental.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No recent rentals</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="d-flex flex-wrap gap-2 mt-4">
-  <a href="/equipment/add" class="btn btn-primary">+ Add Equipment</a>
-  <a href="/rentals/new" class="btn btn-success">+ New Rental</a>
-  <a href="/customers/add" class="btn btn-outline-primary">+ Customer</a>
+    <a href="/equipment/add" class="btn btn-primary">+ Add Equipment</a>
+    <a href="/rentals/new" class="btn btn-success">+ New Rental</a>
+    <a href="/customers/add" class="btn btn-outline-primary">+ Customer</a>
 </div>
 {% endblock %}

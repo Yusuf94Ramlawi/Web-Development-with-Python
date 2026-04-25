@@ -3,20 +3,23 @@ from flask import Blueprint, render_template
 
 dashboard = Blueprint("dashboard", __name__)
 
+
 @dashboard.route("/")
 def index():
     customers = db.customer_data
     equipments = db.equipment_data
     rentals = db.rental_data
-    
+
     total_equipment = len(equipments)
     total_customers = len(customers)
-    total_active_rentals = len([rental for rental in rentals.values() if rental["status"] == "active"])
-    available_equipment = len([equipment for equipment in equipments.values() if equipment["available"] == True])
+    total_active_rentals = len(
+        [rental for rental in rentals.values() if rental["status"] == "active"])
+    available_equipment = len(
+        [equipment for equipment in equipments.values() if equipment["available"] == True])
 
+    recent_rentals = sorted(
+        rentals.values(), key=lambda x: x["id"], reverse=True)[:5]
 
-    recent_rentals = sorted(rentals.values(), key=lambda x: x["id"], reverse=True)[:5]
-    
     recent_rentals_detailed = []
     for rental in recent_rentals:
         customer = customers.get(rental["customer_id"], {})
@@ -30,7 +33,6 @@ def index():
             "status": rental["status"].lower(),
             "total_cost": rental["total_cost"]
         })
-    
 
     return render_template(
         "index.html",
