@@ -1,54 +1,65 @@
 {% extends 'base.html' %}
-{% block title %}Add Equipment{% endblock %}
+{% block title %}{{ 'Edit Equipment' if mode == 'edit' else 'Add Equipment' }}{% endblock %}
 {% block content %}
-<h1>Add New Equipment</h1>
-<form method="post" action="/equipment/add">
-    <div style="margin-bottom: 15px">
-        <label for="name" style="display: block; margin-bottom: 5px">Name:</label>
-        <input
-        type="text"
-        id="name"
-        name="name"
-        required
-        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-        />
+<h1>{{ 'Edit Equipment' if mode == 'edit' else 'Add New Equipment' }}</h1>
+<form class="card p-4" method="post" action="{{ form_action }}">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name:</label>
+        <input type="text" id="name" name="name" class="form-control" required value="{{ form_data.name|default('') }}">
     </div>
-    <div style="margin-bottom: 15px">
-        <label for="category" style="display: block; margin-bottom: 5px">Category:</label>
-        <select
-        id="category"
-        name="category"
-        required
-        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-        >
-        <option value="">Select Category</option>
-        <option value="laptops">Laptops</option>
-        <option value="cameras">Cameras</option>
-        <option value="projectors">Projectors</option>
+    <div class="mb-3">
+        <label for="category" class="form-label">Category:</label>
+        <select id="category" name="category" class="form-select" required onchange="toggleOtherCategory()">
+            <option value="" selected disabled>Select Category</option>
+            {% for category in categories %}
+            <option value="{{ category }}" {% if form_data.category==category %}selected{% endif %}>{{ category }}
+            </option>
+            {% endfor %}
+            <option value="Other" {% if form_data.category=='Other' %}selected{% endif %}>Other</option>
         </select>
+        <input type="text" id="other-category" name="other_category" class="form-control mt-2"
+            placeholder="Enter new category" style="display: none;" value="{{ form_data.other_category|default('') }}">
     </div>
-    <div style="margin-bottom: 15px">
-        <label for="rate" style="display: block; margin-bottom: 5px">Rate per day:</label>
-        <input
-        type="number"
-        id="rate"
-        name="rate"
-        required
-        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-        />
+    <div class="mb-3">
+        <label for="description" class="form-label">Description:</label>
+        <textarea id="description" name="description" class="form-control"
+            required>{{ form_data.description|default('') }}</textarea>
     </div>
-    <button
-        type="submit"
-        style="
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        "
-    >
-        Add Equipment
-    </button>
+    <div class="mb-3">
+        <label for="daily_rate" class="form-label">Daily Rate ($):</label>
+        <input type="number" id="daily_rate" name="daily_rate" class="form-control" min="1" step="0.01" required
+            value="{{ form_data.daily_rate|default('') }}">
+    </div>
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" class="form-control" min="1" required
+            value="{{ form_data.quantity|default('') }}">
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="available" name="available" value="1" {% if
+            form_data.available %}checked{% endif %}>
+        <label class="form-check-label" for="available">Available</label>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">{{ 'Save Changes' if mode == 'edit' else 'Add Equipment'
+            }}</button>
+        <a href="/equipment" class="btn btn-secondary">Cancel</a>
+    </div>
 </form>
+<script>
+    function toggleOtherCategory() {
+        var select = document.getElementById('category');
+        var other = document.getElementById('other-category');
+        if (select.value === 'Other') {
+            other.style.display = '';
+            other.required = true;
+        } else {
+            other.style.display = 'none';
+            other.required = false;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleOtherCategory();
+    });
+</script>
 {% endblock %}

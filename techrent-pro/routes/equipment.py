@@ -24,25 +24,58 @@ def equipment():
 @equipment_bp.route('/add', methods=['GET', 'POST'])
 def add_equipment():
     if request.method == 'POST':
+        from_data = request.form
+        db.equipment_data[db.next_equipment_id] = {
+            "id": db.next_equipment_id,
+            "name": from_data.get('name'),
+            "category": from_data.get('category') if from_data.get('category') != "Other" else from_data.get("other_category"),
+            "daily_rate": float(from_data.get('daily_rate', 0)),
+            "quantity": int(from_data.get('quantity', 0)),
+            "description": from_data.get('description'),
+            "available": (from_data.get('available') == '1')
+        }
+        db.next_equipment_id += 1
         return redirect(url_for('equipment.equipment'))
-    return render_template('equipment/form.html')
+
+    categories = set(e['category'] for e in db.equipment_data.values())
+    return render_template('equipment/form.html', form_data={}, categories=categories, mode='add')
 
 
 @equipment_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_equipment(id):
+    equipment = db.equipment_data.get(id)
+    if not equipment:
+        return render_template('404.html', message="Equipment not found."), 404
+
     if request.method == 'POST':
+        from_data = request.form
+        if (from_data.get("other_category") and from_data.get("category") == "Other"):
+            equipment['category'] = from_data.get("other_category")
+        else:
+            equipment['category'] = from_data.get('category')
+        equipment['name'] = from_data.get('name')
+        equipment['daily_rate'] = float(from_data.get('daily_rate', 0))
+        equipment['quantity'] = int(from_data.get('quantity', 0))
+        equipment['description'] = from_data.get('description')
+        equipment['available'] = (from_data.get('available') == '1')
+
         return redirect(url_for('equipment.equipment'))
-    return render_template('equipment/form.html', id=id)
+    categories = set(e['category'] for e in db.equipment_data.values())
+    return render_template('equipment/form.html', id=id, form_data=equipment, categories=categories, mode='edit')
 
 
 @equipment_bp.route('/delete/<int:id>', methods=['POST'])
 def delete_equipment(id):
+    if id in db.equipment_data:
+        del db.equipment_data[id]
     return redirect(url_for('equipment.equipment'))
 
 
 @equipment_bp.route('/<int:id>')
 def view_equipment(id):
     equipment = db.equipment_data.get(id)
+    if not equipment:
+        return render_template('404.html', message="Equipment not found."), 404
     customers = db.customer_data
     rentals = [r for r in db.rental_data.values() if r['equipment_id'] == id]
     available_quantity = equipment['quantity'] - \
