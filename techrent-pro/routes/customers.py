@@ -2,6 +2,7 @@ import db
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 import re
 from datetime import datetime
+from utils.pagination import Paginator
 
 customers_bp = Blueprint("customers", __name__, url_prefix="/customers")
 
@@ -14,7 +15,9 @@ def customers():
         customers = [c for c in customers if q in c['name'].lower()
                      or q in c['email'].lower()]
     customers = sorted(customers, key=lambda c: c['name'].lower())
-    return render_template('customers/list.html', customers=customers, search_query=q)
+    pager = Paginator()
+    result = pager.paginate(customers)
+    return render_template('customers/list.html', customers=result['data'], search_query=q, pagination=result['pagination'])
 
 
 @customers_bp.route('/add', methods=['GET', 'POST'])
