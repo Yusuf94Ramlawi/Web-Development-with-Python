@@ -1,0 +1,9 @@
+{{}}{% extends "base.html" %}
+{% block title %}Internal Server Error{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <h1 class="display-4 mb-3">505 - Internal Server Error</h1>
+    <p class="lead">{{ message or "Sorry, something went wrong on our end." }}</p>
+    <a href="/" class="btn btn-primary mt-3">Go to Dashboard</a>
+</div>
+{% endblock %}

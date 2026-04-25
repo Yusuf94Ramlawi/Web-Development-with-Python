@@ -114,3 +114,35 @@ Reports Required UI Elements
 •	Top 3 most-rented equipment items (by number of rentals)
 •	Top 3 customers by total spend
 •	Rentals by status: a simple visual bar (CSS width % based on count vs total)
+
+
+
+5.1  Template Inheritance (Mandatory)
+Every HTML page must extend base.html using the block/extends pattern. base.html must define the following named blocks:
+•	{% block title %} — used to set the <title> tag per page
+•	{% block nav_active_* %} — used to highlight the active navigation item
+•	{% block content %} — the main page body
+•	{% block scripts %} — optional per-page JavaScript
+
+
+5.2  Other Required Jinja2 Features
+Feature	Where It Must Appear
+{% for %} loop	Equipment list, customer list, rental list, KPI dashboard
+{% if %} / {% elif %} / {% else %}	Status badge coloring, form edit/create mode, empty-state messages
+{{ variable }}	Every template that displays data
+{{ variable | filter }}	At least 2 Jinja filters used (e.g. |upper, |round(2), |length, |default)
+{% with messages %} flash()	Success and error flash messages on form submissions
+{% include %} or Jinja macro	At least one reusable component (e.g. status badge macro)
+url_for()	All href links and form actions use url_for — no hard-coded URLs
+
+
+7.2  Code Style
+•	Follow PEP 8: 4-space indentation, max 79 chars per line, snake_case naming
+•	No commented-out debug code in the final submission
+•(V)	Flask debug mode must be set via environment variable, not hard-coded True in app.py
+•(XV)	Use Flask Blueprints — all routes must be registered via blueprints, not directly on the app object
+
+7.3  Error Handling
+•	Register custom error handlers for 404 (Not Found) and 500 (Internal Server Error)
+•	API endpoints must never return an HTML error page — they must always return JSON
+•	Wrap database write operations in try/except; return HTTP 422 or 400 with a JSON error body on failure
