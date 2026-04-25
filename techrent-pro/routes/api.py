@@ -454,7 +454,7 @@ def get_rentals():
               total_cost:
                 type: number
     """
-    return jsonify(list(db.rental_data.values())), 200
+    return jsonify(rental_service.get_all_rentals()), 200
 
 
 @api_bp.route('/rentals', methods=['POST'])
@@ -495,46 +495,23 @@ def create_rental():
         description: Equipment or customer not found
     """
     data = request.get_json()
-    required = ['equipment_id', 'customer_id', 'start_date', 'end_date']
-    if not data or not all(k in data for k in required):
-        return jsonify({"error": "Missing required fields"}), 400
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
 
-    equipment_id = int(data['equipment_id'])
-    customer_id = int(data['customer_id'])
+    # Validate using service layer
+    errors, validated = rental_service.validate_rental_data(data, for_api=True)
 
-    # Validate equipment and customer exist
-    if equipment_id not in db.equipment_data:
-        return jsonify({"error": "Equipment not found"}), 404
-    if customer_id not in db.customer_data:
-        return jsonify({"error": "Customer not found"}), 404
+    if errors:
+        return jsonify({"errors": errors}), 400
 
-    equipment = db.equipment_data[equipment_id]
-
-    # Calculate total cost
-    try:
-        start = datetime.strptime(data['start_date'], "%Y-%m-%d")
-        end = datetime.strptime(data['end_date'], "%Y-%m-%d")
-        days = (end - start).days + 1
-        if days <= 0:
-            return jsonify({"error": "Invalid date range"}), 400
-        total_cost = round(equipment['daily_rate'] * days, 2)
-    except ValueError:
-        return jsonify({
-            "error": "Invalid date format. Use YYYY-MM-DD"
-        }), 400
-
-    new_id = db.next_rental_id
-    db.rental_data[new_id] = {
-        "id": new_id,
-        "equipment_id": equipment_id,
-        "customer_id": customer_id,
-        "start_date": data['start_date'],
-        "end_date": data['end_date'],
-        "status": "active",
-        "total_cost": total_cost,
-    }
-    db.next_rental_id += 1
-    return jsonify(db.rental_data[new_id]), 201
+    # Create rental using service layer
+    rental = rental_service.create_rental(
+        validated['equipment_id'],
+        validated['customer_id'],
+        validated['start_date'],
+        validated['end_date']
+    )
+    return jsonify(rental), 201
 
 
 @api_bp.route('/rentals/<int:rental_id>', methods=['GET'])
@@ -555,7 +532,7 @@ def get_rental_by_id(rental_id):
       404:
         description: Rental not found
     """
-    rental = db.rental_data.get(rental_id)
+    rental = rental_service.get_rental_by_id(rental_id)
     if not rental:
         return jsonify({"error": "Rental not found"}), 404
     return jsonify(rental), 200
@@ -579,9 +556,7 @@ def return_rental(rental_id):
       404:
         description: Rental not found
     """
-    rental = db.rental_data.get(rental_id)
+    rental = rental_service.update_rental_status(rental_id, 'returned')
     if not rental:
         return jsonify({"error": "Rental not found"}), 404
-
-    rental['status'] = 'returned'
     return jsonify(rental), 200
