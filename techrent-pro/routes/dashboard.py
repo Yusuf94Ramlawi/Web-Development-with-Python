@@ -15,7 +15,7 @@ def index():
     available_equipment = len([equipment for equipment in equipments.values() if equipment["available"] == True])
 
 
-    recent_rentals = sorted(rentals.values(), key=lambda x: x["start_date"], reverse=True)[:5]
+    recent_rentals = sorted(rentals.values(), key=lambda x: x["id"], reverse=True)[:5]
     
     recent_rentals_detailed = []
     for rental in recent_rentals:
