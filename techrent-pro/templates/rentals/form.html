@@ -1,50 +1,73 @@
 {% extends 'base.html' %}
-{% block title %}Add rentals{% endblock %}
+{% set is_edit = rental and rental.id %}
+{% block title %}{{ 'Edit Rental' if is_edit else 'Add Rental' }}{% endblock %}
+
 {% block content %}
-<h1>Add New rentals</h1>
-<form method="post" action="/rentals/add">
-    <div style="margin-bottom: 15px">
-        <label for="customer" style="display: block; margin-bottom: 5px">Customer:</label>
-        <input
-        type="text"
-        id="customer"
-        name="customer"
-        required
-        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-        />
+<h1 class="h3 mb-4">{{ 'Edit Rental' if is_edit else 'Add New Rental' }}</h1>
+
+{% if error_message %}
+<div class="alert alert-danger" role="alert">{{ error_message }}</div>
+{% endif %}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <form method="post" action="{{ form_action or '/rentals/new' }}">
+            <div class="mb-3">
+                <label for="customer_id" class="form-label">Customer:</label>
+                <select id="customer_id" name="customer_id" class="form-select" required>
+                    <option value="">Select customer</option>
+                    {% for customer in customers %}
+                    <option value="{{ customer.id }}" {% if rental and rental.customer_id|int==customer.id %}selected{%
+                        endif %}>
+                        {{ customer.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="equipment_id" class="form-label">Equipment:</label>
+                <select id="equipment_id" name="equipment_id" class="form-select" required>
+                    <option value="">Select equipment</option>
+                    {% for item in equipment %}
+                    <option value="{{ item.id }}" {% if rental and rental.equipment_id|int==item.id %}selected{% endif
+                        %}>
+                        {{ item.name }} ({{ item.category }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-6">
+                    <label for="start_date" class="form-label">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date"
+                        value="{{ rental.start_date if rental else '' }}" class="form-control" required />
+                </div>
+                <div class="col-12 col-md-6">
+                    <label for="end_date" class="form-label">End Date:</label>
+                    <input type="date" id="end_date" name="end_date" value="{{ rental.end_date if rental else '' }}"
+                        class="form-control" required />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="status" class="form-label">Status:</label>
+                <select id="status" name="status" class="form-select" required>
+                    <option value="active" {% if not rental or (rental.status or '' )|lower=='active' %}selected{% endif
+                        %}>Active</option>
+                    <option value="returned" {% if rental and (rental.status or '' )|lower=='returned' %}selected{%
+                        endif %}>Returned</option>
+                    <option value="overdue" {% if rental and (rental.status or '' )|lower=='overdue' %}selected{% endif
+                        %}>Overdue</option>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">{{ submit_label or 'Save rental' }}</button>
+                <a href="/rentals" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
     </div>
-    <div style="margin-bottom: 15px">
-        <label for="equipment" style="display: block; margin-bottom: 5px">Equipment:</label>
-        <input
-        type="text"
-        id="equipment"
-        name="equipment"
-        required
-        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-        />
-    </div>
-    <div style="margin-bottom: 15px">
-        <label for="dates" style="display: block; margin-bottom: 5px">Dates:</label>
-        <input
-        type="text"
-        id="dates"
-        name="dates"
-        required
-        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-        />
-    </div>
-    <button
-        type="submit"
-        style="
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        "
-    >
-        Add rental
-    </button>
-</form>
+</div>
 {% endblock %}

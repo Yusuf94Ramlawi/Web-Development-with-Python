@@ -1,93 +1,100 @@
-{% extends "base.html" %} {% block title %}rentals{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+{% block title %}Rentals{% endblock %}
+
+{% block content %}
 {% set status_classes = {
-  'Active': 'bg-success',
-  'Returned': 'bg-secondary',
-  'Overdue': 'bg-danger'
+'active': 'bg-success',
+'returned': 'bg-secondary',
+'overdue': 'bg-danger'
 } %}
-<div>
-  <h1>Rentals</h1>
-  <a href="/rentals/new">
-    <button
-      style="
-        margin-bottom: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      "
-    >
-      + New Rental
-    </button>
-  </a>
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="fw-semibold">Rentals</h2>
 </div>
 
-<!-- Category Filter with search-->
-<span> Filters: </span>
-<form method="GET" action="/rentals" style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
-  <select name="category" onchange="this.form.submit()" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px">
-    <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
-    {% for category in categories %}
-    <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
-      {{ category }}
-    </option>
-    {% endfor %}
-  </select>
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="/rentals/new" class="btn btn-primary">+ New Rental</a>
+</div>
+
+<form method="GET" action="/rentals" class="row g-2 align-items-end mb-4">
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <select id="category" name="category" class="form-select" onchange="this.form.submit()">
+      <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+      {% for category in categories %}
+      <option value="{{ category }}" {% if selected_category==category %}selected{% endif %}>
+        {{ category }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <input type="text" id="q" name="q" value="{{ search_query or '' }}" class="form-control"
+      placeholder="Customer, equipment, category or ID" />
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-success">Search</button>
+  </div>
   <noscript>
-    <button type="submit" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f8f9fa; cursor: pointer;">Apply</button>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-secondary">Apply</button>
+    </div>
   </noscript>
 </form>
 
-<!-- rentals Table -->
-<div>
-  <table>
-    <thead>
-      <tr>
-        <th style="border: 1px solid #ddd; padding: 8px">ID</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Customer</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Equipment</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Dates</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Total Cost</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if rentals %} {% for rental in rentals %}
-      <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">{{ rental.id }}</td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ rental.customer_name }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ rental.equipment_name }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ rental.start_date }} to {{ rental.end_date }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          ${{ rental.total_cost }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          <span
-            class="badge {{ status_classes.get(rental.status, 'bg-warning text-dark') }}"
-          >
-            {{ rental.status }}
-          </span>
-        </td>
-      </tr>
-      {% endfor %} {% else %}
-      <tr>
-        <td style="border: 1px solid #ddd; padding: 8px" colspan="6">
-          No rentals found.
-        </td>
-      </tr>
-      {% endif %}
-    </tbody>
-  </table>
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Equipment</th>
+            <th>Dates</th>
+            <th>Total Cost</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if rentals %}
+          {% for rental in rentals %}
+          <tr>
+            <td>{{ rental.id }}</td>
+            <td>{{ rental.customer_name }}</td>
+            <td>{{ rental.equipment_name }}</td>
+            <td>{{ rental.start_date }} to {{ rental.end_date }}</td>
+            <td>${{ rental.total_cost }}</td>
+            <td>
+              <span
+                class="badge {{ status_classes.get((rental.status or '')|lower, 'bg-warning text-dark') }} text-capitalize">
+                {{ rental.status }}
+              </span>
+            </td>
+            <td>
+              <a href="/rentals/{{ rental.id }}" class="btn btn-sm btn-outline-secondary me-1" title="View">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="/rentals/{{ rental.id }}/edit" class="btn btn-sm btn-outline-warning me-1" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="post" action="/rentals/{{ rental.id }}/delete" class="d-inline"
+                onsubmit="return confirm('Delete this rental?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">No rentals found.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-
 {% endblock %}
-
-

@@ -1,112 +1,63 @@
-{% extends "base.html" %} {% block title %}Customers{% endblock %} {% block
-content %}
-<div>
-  <h1>Customers</h1>
-  <a href="/customers/add">
-    <button
-      style="
-        margin-bottom: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      "
-    >
-      + Register Customer
-    </button>
-  </a>
+{% extends "base.html" %}
+{% block title %} Customers {% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="fw-semibold">Customers</h2>
 </div>
 
-<div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
-  <input
-    type="text"
-    placeholder="Search"
-    style="
-      padding: 8px;
-      width: 200px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    "
-  />
-  <button
-    style="
-      padding: 8px 16px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    "
-  >
-    Search
-  </button>
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="/customers/add" class="btn btn-primary">+ Register Customer</a>
 </div>
 
-<div>
-  <table>
-    <thead>
-      <tr>
-        <th style="border: 1px solid #ddd; padding: 8px">ID</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Name</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Email</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Phone</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for customer in customers %}
-      <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">{{ customer.id }}</td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ customer.name }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ customer.email }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ customer.phone }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          <a href="/customers/{{ customer.id }}/edit">
-            <button
-              style="
-                padding: 6px 12px;
-                background-color: #ffc107;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-              "
-            >
-              Edit
-            </button>
-          </a>
-          <form
-            action="/customers/{{ customer.id }}/delete"
-            method="post"
-            style="display: inline"
-          >
-            <button
-              type="submit"
-              style="
-                padding: 6px 12px;
-                background-color: #dc3545;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-              "
-            >
-              Delete
-            </button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+
+<form method="GET" action="/customers" class="row g-2 align-items-end mb-4">
+  <div class="col-auto">
+    <input type="text" name="q" value="{{ search_query or '' }}" class="form-control"
+      placeholder="Search by name, email, or phone" />
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-success">Search</button>
+  </div>
+</form>
+
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for customer in customers %}
+          <tr>
+            <td>{{ customer.id }}</td>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.phone }}</td>
+            <td>
+              <a href="/customers/{{ customer.id }}/edit" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form action="/customers/{{ customer.id }}/delete" method="post" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

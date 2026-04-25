@@ -1,120 +1,83 @@
-{% extends "base.html" %} {% block title %}Equipment Catalogue{% endblock %} {%
-block content %}
-<div>
-  <h1>Equipment Catalogue</h1>
-  <a href="/equipment/add">
-    <button
-      style="
-        margin-bottom: 20px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      "
-    >
-      + Add Equipment
-    </button>
-  </a>
+{% extends "base.html" %}
+{% block title %}Equipment Catalogue{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="fw-semibold">Equipment Catalogue</h2>
+</div>
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="/equipment/add" class="btn btn-primary">+ Add Equipment</a>
 </div>
 
-<!-- Category Filter with search-->
-<div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px">
-  <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px">
-    {% for category in categories %}
-    <option value="{{ category }}">{{ category }}</option>
-    {% endfor %}
-  </select>
-  <input
-    type="text"
-    placeholder="Search equipment..."
-    style="
-      padding: 8px;
-      width: 200px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    "
-  />
-  <button
-    style="
-      padding: 8px 16px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    "
-  >
-    Find
-  </button>
-</div>
 
-<!-- Equipment Table -->
-<div>
-  <table>
-    <thead>
-      <tr>
-        <th style="border: 1px solid #ddd; padding: 8px">ID</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Name</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Category</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Rate/day</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Qty</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Available</th>
-        <th style="border: 1px solid #ddd; padding: 8px">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for equipment in equipment_list.values() %}
-      <tr>
-        <td style="border: 1px solid #ddd; padding: 8px">{{ equipment.id }}</td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ equipment.name }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ equipment.category }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          ${{ equipment.daily_rate }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {{ equipment.quantity }}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          {% if equipment.available %}
-          <span class="badge bg-success text-light">Yes</span>
-          {% else %}
-          <span class="badge bg-danger text-light">No</span>
-          {% endif %}
-        </td>
-        <td style="border: 1px solid #ddd; padding: 8px">
-          <a href="/equipment/{{ equipment.id }}"
-            ><button style="padding: 5px 10px; margin-right: 5px">
-              View
-            </button></a
-          >
-          <a href="/equipment/edit/{{ equipment.id }}"
-            ><button style="padding: 5px 10px; margin-right: 5px">
-              Edit
-            </button></a
-          >
-          <form
-            action="/equipment/delete/{{ equipment.id }}"
-            method="post"
-            style="display: inline"
-          >
-            <button
-              type="submit"
-              style="padding: 5px 10px; background-color: red; color: white"
-            >
-              Delete
-            </button>
-          </form>
-        </td>
-      </tr>
+<form method="GET" action="/equipment" class="row g-2 align-items-end mb-4">
+  <div class="col-auto">
+    <select name="category" class="form-select" onchange="this.form.submit()">
+      <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+      {% for category in categories %}
+      <option value="{{ category }}" {% if selected_category==category %}selected{% endif %}>{{ category }}</option>
       {% endfor %}
-    </tbody>
-  </table>
+    </select>
+  </div>
+  <div class="col-auto">
+    <input type="text" name="q" value="{{ search_query or '' }}" class="form-control"
+      placeholder="Search equipment..." />
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-success">Find</button>
+  </div>
+</form>
+
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Rate/day</th>
+            <th>Qty</th>
+            <th>Available</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for equipment in equipment_list.values() %}
+          <tr>
+            <td>{{ equipment.id }}</td>
+            <td>{{ equipment.name }}</td>
+            <td>{{ equipment.category }}</td>
+            <td>${{ equipment.daily_rate }}</td>
+            <td>{{ equipment.quantity }}</td>
+            <td>
+              {% if equipment.available %}
+              <span class="badge bg-success">Yes</span>
+              {% else %}
+              <span class="badge bg-danger">No</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="/equipment/{{ equipment.id }}" class="btn btn-sm btn-outline-secondary me-1" title="View">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="/equipment/edit/{{ equipment.id }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form action="/equipment/delete/{{ equipment.id }}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
