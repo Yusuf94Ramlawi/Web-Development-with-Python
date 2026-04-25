@@ -50,19 +50,6 @@
                         class="form-control" required />
                 </div>
             </div>
-
-            <div class="mb-4">
-                <label for="status" class="form-label">Status:</label>
-                <select id="status" name="status" class="form-select" required>
-                    <option value="active" {% if not rental or (rental.status or '' )|lower=='active' %}selected{% endif
-                        %}>Active</option>
-                    <option value="returned" {% if rental and (rental.status or '' )|lower=='returned' %}selected{%
-                        endif %}>Returned</option>
-                    <option value="overdue" {% if rental and (rental.status or '' )|lower=='overdue' %}selected{% endif
-                        %}>Overdue</option>
-                </select>
-            </div>
-
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">{{ submit_label or 'Save rental' }}</button>
                 <a href="/rentals" class="btn btn-outline-secondary">Cancel</a>
