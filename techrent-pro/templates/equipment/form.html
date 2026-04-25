@@ -3,16 +3,22 @@
 {% block content %}
 <h1>{{ 'Edit Equipment' if mode == 'edit' else 'Add New Equipment' }}</h1>
 <div class="card p-4 mb-4 shadow-sm border-0">
-    <form method="post" action="{{ form_action }}">
+    <form method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Name:</label>
-            <input type="text" id="name" name="name" class="form-control" required
+            <input type="text" id="name" name="name"
+                class="form-control {% if errors and errors.name %}is-invalid{% endif %}" required
                 value="{{ form_data.name|default('') }}">
+            {% if errors and errors.name %}
+            <div class="invalid-feedback">{{ errors.name }}</div>
+            {% endif %}
         </div>
         <div class="mb-3">
             <label for="category" class="form-label">Category:</label>
-            <select id="category" name="category" class="form-select" required onchange="toggleOtherCategory()">
-                <option value="" selected disabled>Select Category</option>
+            <select id="category" name="category"
+                class="form-select {% if errors and errors.category %}is-invalid{% endif %}" required
+                onchange="toggleOtherCategory()">
+                <option value="" {% if not form_data.category %}selected{% endif %} disabled>Select Category</option>
                 {% for category in categories %}
                 <option value="{{ category }}" {% if form_data.category==category %}selected{% endif %}>{{ category }}
                 </option>
@@ -22,21 +28,36 @@
             <input type="text" id="other-category" name="other_category" class="form-control mt-2"
                 placeholder="Enter new category" style="display: none;"
                 value="{{ form_data.other_category|default('') }}">
+            {% if errors and errors.category %}
+            <div class="invalid-feedback d-block">{{ errors.category }}</div>
+            {% endif %}
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description:</label>
-            <textarea id="description" name="description" class="form-control"
+            <textarea id="description" name="description"
+                class="form-control {% if errors and errors.description %}is-invalid{% endif %}"
                 required>{{ form_data.description|default('') }}</textarea>
+            {% if errors and errors.description %}
+            <div class="invalid-feedback">{{ errors.description }}</div>
+            {% endif %}
         </div>
         <div class="mb-3">
             <label for="daily_rate" class="form-label">Daily Rate ($):</label>
-            <input type="number" id="daily_rate" name="daily_rate" class="form-control" min="1" step="0.01" required
-                value="{{ form_data.daily_rate|default('') }}">
+            <input type="number" id="daily_rate" name="daily_rate"
+                class="form-control {% if errors and errors.daily_rate %}is-invalid{% endif %}" min="1" step="0.01"
+                required value="{{ form_data.daily_rate|default('') }}">
+            {% if errors and errors.daily_rate %}
+            <div class="invalid-feedback">{{ errors.daily_rate }}</div>
+            {% endif %}
         </div>
         <div class="mb-3">
             <label for="quantity" class="form-label">Quantity:</label>
-            <input type="number" id="quantity" name="quantity" class="form-control" min="1" required
+            <input type="number" id="quantity" name="quantity"
+                class="form-control {% if errors and errors.quantity %}is-invalid{% endif %}" min="1" required
                 value="{{ form_data.quantity|default('') }}">
+            {% if errors and errors.quantity %}
+            <div class="invalid-feedback">{{ errors.quantity }}</div>
+            {% endif %}
         </div>
         <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" id="available" name="available" value="1" {% if

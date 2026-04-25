@@ -1,262 +1,151 @@
-{% extends "base.html" %} {% block title %}Reports{% endblock %} {% block
-content %}
-<div>
-  <h1>Reports & Analytics</h1>
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<h2 class="fw-semibold mb-4">Reports & Analytics</h2>
+
+<h3 class="h5 mb-3">Revenue Summary</h3>
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-muted">Total Completed Revenue</h5>
+                <p class="display-6 fw-bold text-success mb-0">
+                    ${{ '%.2f'|format(total_revenue) }}
+                </p>
+                <small class="text-muted">From returned rentals</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-muted">Active Pipeline Revenue</h5>
+                <p class="display-6 fw-bold text-primary mb-0">
+                    ${{ '%.2f'|format(active_revenue) }}
+                </p>
+                <small class="text-muted">From active rentals</small>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div>
-  <h2>Revenue Summary</h2>
-  <div style="display: flex; gap: 20px; margin-bottom: 40px">
-    <div
-      style="
-        flex: 1;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      "
-    >
-      <h3>Total Completed</h3>
-      <p style="font-size: 1.5em; font-weight: bold">$12,345</p>
-    </div>
-    <div
-      style="
-        flex: 1;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      "
-    >
-      <h3>Active Pipeline</h3>
-      <p style="font-size: 1.5em; font-weight: bold">$2,345</p>
-    </div>
-  </div>
-
-  <div style="display: flex; gap: 20px">
-    <div style="flex: 1">
-      <h2>Top Equipment by Rentals</h2>
-      <table style="width: 100%; border-collapse: collapse">
-        <thead>
-          <tr>
-            <th
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-              "
-            >
-              Equipment
-            </th>
-            <th
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              Rentals
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="border-bottom: 1px solid #ddd; padding: 8px">
-              Laptop A
-            </td>
-            <td
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              150
-            </td>
-          </tr>
-          <tr>
-            <td style="border-bottom: 1px solid #ddd; padding: 8px">
-              Camera B
-            </td>
-            <td
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              120
-            </td>
-          </tr>
-          <tr>
-            <td style="border-bottom: 1px solid #ddd; padding: 8px">
-              Projector C
-            </td>
-            <td
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              90
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div style="flex: 1">
-      <h2>Top Customers by Spend</h2>
-      <table style="width: 100%; border-collapse: collapse">
-        <thead>
-          <tr>
-            <th
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-              "
-            >
-              Customer
-            </th>
-            <th
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              Total Spend
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="border-bottom: 1px solid #ddd; padding: 8px">
-              Alice Smith
-            </td>
-            <td
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              $3,000
-            </td>
-          </tr>
-          <tr>
-            <td style="border-bottom: 1px solid #ddd; padding: 8px">
-              Bob Johnson
-            </td>
-            <td
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              $2,500
-            </td>
-          </tr>
-          <tr>
-            <td style="border-bottom: 1px solid #ddd; padding: 8px">
-              Charlie Lee
-            </td>
-            <td
-              style="
-                border-bottom: 1px solid #ddd;
-                padding: 8px;
-                text-align: right;
-              "
-            >
-              $2,000
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div style="flex: 1; margin-top: 20px">
-    <h2>Rental Status Distribution</h2>
-    <div style="margin-bottom: 10px">
-      <span>Active</span>
-      <div
-        style="
-          background-color: #e9ecef;
-          border-radius: 4px;
-          overflow: hidden;
-          height: 20px;
-          margin-top: 5px;
-        "
-      >
-        <div
-          style="
-            width: 60%;
-            background-color: #28a745;
-            height: 100%;
-            text-align: center;
-            color: white;
-            font-size: 0.8em;
-          "
-        >
-          60%
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Top Equipment by Rentals</h5>
+                {% if top_equipment %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Equipment</th>
+                                <th>Category</th>
+                                <th class="text-end">Rentals</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for eq in top_equipment %}
+                            <tr>
+                                <td>{{ eq.name }}</td>
+                                <td><span class="badge bg-secondary">{{ eq.category }}</span></td>
+                                <td class="text-end fw-bold">{{ eq.rental_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No rental data available</p>
+                {% endif %}
+            </div>
         </div>
-      </div>
     </div>
-    <div style="margin-bottom: 10px">
-      <span>Returned</span>
-      <div
-        style="
-          background-color: #e9ecef;
-          border-radius: 4px;
-          overflow: hidden;
-          height: 20px;
-          margin-top: 5px;
-        "
-      >
-        <div
-          style="
-            width: 30%;
-            background-color: #007bff;
-            height: 100%;
-            text-align: center;
-            color: white;
-            font-size: 0.8em;
-          "
-        >
-          30%
-        </div>
-      </div>
-    </div>
-    <div style="margin-bottom: 10px">
-      <span>Overdue</span>
-      <div
-        style="
-          background-color: #e9ecef;
-          border-radius: 4px;
-          overflow: hidden;
-          height: 20px;
-          margin-top: 5px;
-        "
-      >
-        <div
-          style="
-            width: 10%;
-            background-color: #dc3545;
-            height: 100%;
-            text-align: center;
-            color: white;
-            font-size: 0.8em;
-          "
-        >
-          10%
-        </div>
-      </div>
-    </div>
-  </div>
 
-  {% endblock %}
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Top Customers by Spend</h5>
+                {% if top_customers %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Customer</th>
+                                <th class="text-end">Total Spend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in top_customers %}
+                            <tr>
+                                <td>
+                                    <div>{{ customer.name }}</div>
+                                    <small class="text-muted">{{ customer.email }}</small>
+                                </td>
+                                <td class="text-end fw-bold text-success">${{ '%.2f'|format(customer.total_spent) }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No customer data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Rental Status Distribution</h5>
+        {% if total_rentals > 0 %}
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-semibold">Active</span>
+                <span class="text-muted">{{ status_counts.active }} rentals ({{ status_percentages.active }}%)</span>
+            </div>
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ status_percentages.active }}%"
+                    aria-valuenow="{{ status_percentages.active }}" aria-valuemin="0" aria-valuemax="100">
+                    {% if status_percentages.active > 10 %}{{ status_percentages.active }}%{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-semibold">Returned</span>
+                <span class="text-muted">{{ status_counts.returned }} rentals ({{ status_percentages.returned
+                    }}%)</span>
+            </div>
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar bg-secondary" role="progressbar"
+                    style="width: {{ status_percentages.returned }}%" aria-valuenow="{{ status_percentages.returned }}"
+                    aria-valuemin="0" aria-valuemax="100">
+                    {% if status_percentages.returned > 10 %}{{ status_percentages.returned }}%{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-0">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-semibold">Overdue</span>
+                <span class="text-muted">{{ status_counts.overdue }} rentals ({{ status_percentages.overdue }}%)</span>
+            </div>
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ status_percentages.overdue }}%"
+                    aria-valuenow="{{ status_percentages.overdue }}" aria-valuemin="0" aria-valuemax="100">
+                    {% if status_percentages.overdue > 10 %}{{ status_percentages.overdue }}%{% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-3">No rental data available</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -9,108 +9,122 @@
 } %}
 
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h2 class="fw-semibold">Rentals</h2>
-  <a href="/rentals/new" class="btn btn-primary">+ New Rental</a>
+    <h2 class="fw-semibold">Rentals</h2>
+    <a href="/rentals/new" class="btn btn-primary">+ New Rental</a>
 </div>
 
 <form method="GET" action="/rentals" class="row g-2 align-items-end mb-4">
-  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-    <select id="category" name="category" class="form-select" onchange="this.form.submit()">
-      <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
-      {% for category in categories %}
-      <option value="{{ category }}" {% if selected_category==category %}selected{% endif %}>
-        {{ category }}
-      </option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-    <input type="text" id="q" name="q" value="{{ search_query or '' }}" class="form-control"
-      placeholder="Customer, equipment, category or ID" />
-  </div>
-  <div class="col-auto">
-    <button type="submit" class="btn btn-success">Search</button>
-  </div>
-  <noscript>
-    <div class="col-auto">
-      <button type="submit" class="btn btn-outline-secondary">Apply</button>
+    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+        <label for="category" class="form-label small">Category</label>
+        <select id="category" name="category" class="form-select" onchange="this.form.submit()">
+            <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category }}" {% if selected_category==category %}selected{% endif %}>
+                {{ category }}
+            </option>
+            {% endfor %}
+        </select>
     </div>
-  </noscript>
+    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+        <label for="status" class="form-label small">Status</label>
+        <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+            <option value="" {% if not selected_status %}selected{% endif %}>All Statuses</option>
+            {% for status in statuses %}
+            <option value="{{ status }}" {% if selected_status==status %}selected{% endif %}>
+                {{ status|capitalize }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label for="q" class="form-label small">Search</label>
+        <input type="text" id="q" name="q" value="{{ search_query or '' }}" class="form-control"
+            placeholder="Customer, equipment, ID" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-success">Search</button>
+    </div>
+    <noscript>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-secondary">Apply</button>
+        </div>
+    </noscript>
 </form>
 
 <div class="card shadow-sm">
-  <div class="card-body p-0">
-    <div class="table-responsive">
-      <table class="table align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Equipment</th>
-            <th>Dates</th>
-            <th>Total Cost</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if rentals %}
-          {% for rental in rentals %}
-          <tr>
-            <td>{{ rental.id }}</td>
-            <td>{{ rental.customer_name }}</td>
-            <td>{{ rental.equipment_name }}</td>
-            <td>{{ rental.start_date }} to {{ rental.end_date }}</td>
-            <td>${{ rental.total_cost }}</td>
-            <td>
-              <span
-                class="badge {{ status_classes.get((rental.status or '')|lower, 'bg-warning text-dark') }} text-capitalize">
-                {{ rental.status }}
-              </span>
-            </td>
-            <td>
-              {% if rental.status == 'Active' %}
-              <form method="post" action="/rentals/{{ rental.id }}/return" class="d-inline"
-                onsubmit="return confirm('Mark this rental as returned?');">
-                <button type="submit" class="btn btn-sm btn-outline-success" title="Return">
-                  <i class="bi bi-check2"></i>
-                </button>
-              </form>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-          {% else %}
-          <tr>
-            <td colspan="7" class="text-center text-muted py-4">No rentals found.</td>
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Equipment</th>
+                        <th>Dates</th>
+                        <th>Total Cost</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if rentals %}
+                    {% for rental in rentals %}
+                    <tr>
+                        <td>{{ rental.id }}</td>
+                        <td>{{ rental.customer_name }}</td>
+                        <td>{{ rental.equipment_name }}</td>
+                        <td>{{ rental.start_date }} to {{ rental.end_date }}</td>
+                        <td>${{ rental.total_cost }}</td>
+                        <td>
+                            <span
+                                class="badge {{ status_classes.get((rental.status or '')|lower, 'bg-warning text-dark') }} text-capitalize">
+                                {{ rental.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if rental.status == 'Active' %}
+                            <form method="post" action="/rentals/{{ rental.id }}/return" class="d-inline"
+                                onsubmit="return confirm('Mark this rental as returned?');">
+                                <button type="submit" class="btn btn-sm btn-outline-success" title="Return">
+                                    <i class="bi bi-check2"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No rentals found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        {% if pagination.total_pages > 1 %}
+        <div class="card-footer bg-white border-top d-flex justify-content-center">
+            <nav aria-label="Rentals pagination">
+                <ul class="pagination mb-0">
+                    <li class="page-item {% if pagination.page == 1 %}disabled{% endif %}">
+                        <a class="page-link"
+                            href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&status={{ selected_status|urlencode }}&page={{ pagination.page-1 }}"
+                            tabindex="-1">Previous</a>
+                    </li>
+                    {% for p in range(1, pagination.total_pages+1) %}
+                    <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                        <a class="page-link"
+                            href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&status={{ selected_status|urlencode }}&page={{ p }}">{{
+                            p }}</a>
+                    </li>
+                    {% endfor %}
+                    <li class="page-item {% if pagination.page == pagination.total_pages %}disabled{% endif %}">
+                        <a class="page-link"
+                            href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&status={{ selected_status|urlencode }}&page={{ pagination.page+1 }}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
     </div>
-    {% if pagination.total_pages > 1 %}
-    <div class="card-footer bg-white border-top d-flex justify-content-center">
-      <nav aria-label="Rentals pagination">
-        <ul class="pagination mb-0">
-          <li class="page-item {% if pagination.page == 1 %}disabled{% endif %}">
-            <a class="page-link"
-              href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ pagination.page-1 }}"
-              tabindex="-1">Previous</a>
-          </li>
-          {% for p in range(1, pagination.total_pages+1) %}
-          <li class="page-item {% if p == pagination.page %}active{% endif %}">
-            <a class="page-link"
-              href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ p }}">{{ p }}</a>
-          </li>
-          {% endfor %}
-          <li class="page-item {% if pagination.page == pagination.total_pages %}disabled{% endif %}">
-            <a class="page-link"
-              href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ pagination.page+1 }}">Next</a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-    {% endif %}
-  </div>
 </div>
 {% endblock %}
