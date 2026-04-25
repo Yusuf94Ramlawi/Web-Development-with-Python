@@ -10,9 +10,6 @@
 
 <div class="d-flex align-items-center justify-content-between mb-3">
   <h2 class="fw-semibold">Rentals</h2>
-</div>
-
-<div class="d-flex flex-wrap gap-2 mb-4">
   <a href="/rentals/new" class="btn btn-primary">+ New Rental</a>
 </div>
 
@@ -53,7 +50,7 @@
             <th>Dates</th>
             <th>Total Cost</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -72,18 +69,14 @@
               </span>
             </td>
             <td>
-              <a href="/rentals/{{ rental.id }}" class="btn btn-sm btn-outline-secondary me-1" title="View">
-                <i class="bi bi-eye"></i>
-              </a>
-              <a href="/rentals/{{ rental.id }}/edit" class="btn btn-sm btn-outline-warning me-1" title="Edit">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <form method="post" action="/rentals/{{ rental.id }}/delete" class="d-inline"
-                onsubmit="return confirm('Delete this rental?');">
-                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                  <i class="bi bi-trash"></i>
+              {% if rental.status == 'Active' %}
+              <form method="post" action="/rentals/{{ rental.id }}/return" class="d-inline"
+                onsubmit="return confirm('Mark this rental as returned?');">
+                <button type="submit" class="btn btn-sm btn-outline-success" title="Return">
+                  <i class="bi bi-check2"></i>
                 </button>
               </form>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -106,7 +99,8 @@
           </li>
           {% for p in range(1, pagination.total_pages+1) %}
           <li class="page-item {% if p == pagination.page %}active{% endif %}">
-            <a class="page-link" href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ p }}">{{ p }}</a>
+            <a class="page-link"
+              href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ p }}">{{ p }}</a>
           </li>
           {% endfor %}
           <li class="page-item {% if pagination.page == pagination.total_pages %}disabled{% endif %}">

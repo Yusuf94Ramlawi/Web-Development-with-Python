@@ -56,3 +56,61 @@ AC-03 The Docker Hub repo is public and the docker pull command in README.md wor
 AC-04 requirements.txt is complete: all imports used in the code are listed with pinned versions
 AC-05 The image size is under 500 MB (use python:3.11-slim, not python:3.11)
 AC-06 No sensitive data (API keys, passwords) are baked into the image
+
+
+
+•	Include a TEAM.md file in the zip with: full names, IDs, Git history screenshot, and a brief sentence per student describing their main contribution.
+•	Zip file must follow the naming convention exactly: ID1_FirstStudentLastname_ID2_SecondStudentLastName_FLASK.zip
+
+
+Dashboard Required UI Elements
+•(V)	Navigation bar with logo, links to Equipment, Customers, Rentals, and API Docs
+•(V)	4 KPI cards: Total Equipment Items, Available Equipment, Active Rentals, Total Customers
+•(V)	A table of the 5 most recent rentals (latest first) showing: rental ID, customer name, equipment name, dates, status badge (color-coded)
+•(V)	A quick-action bar with buttons: Add Equipment, New Rental, Register Customer
+
+Equipment List Required UI Elements
+•(V)	Table listing all equipment: ID, Name, Category, Daily Rate, Qty, Available status
+•(V)	A search/filter bar at the top (filter by category using a dropdown + filter by name using a text input)
+•(V)	Action buttons per row: View Details, Edit, Delete (with a JS confirm dialog)
+•(V)	A prominent 'Add New Equipment' button at the top right
+•(V)	Pagination (5 items per page)  OR  a client-side JavaScript filter
+
+Equipment Detail Required UI Elements
+•(V)	Full equipment card: name, category, description, daily rate, total qty, currently available qty
+•(V)	Rental history table for this equipment item: customer name, dates, status, total cost
+•(V)	Edit and Back buttons
+
+Add / Edit Equipment  Required UI Elements
+•(V) 	Form fields: Name (text), Category (select with predefined + 'Other' option), Description (textarea), Daily Rate (number, min $1), Quantity (number, min 1), Available (checkbox)
+•(V)	Submit button label changes based on mode: 'Add Equipment' vs 'Save Changes'
+•(V)	Cancel button links back to the equipment list
+•	Server-side validation: all fields required; rate and quantity must be positive numbers
+•	On validation failure, re-render the form with field-level error messages and preserve user input (no data loss on error)
+
+Customer List Required UI Elements 
+•(V)	Table: ID, Name, Email, Phone, Registered Date, Actions (Edit, Delete)
+•(V)	Search by name or email (text input)
+•(V)	'Register Customer' button
+
+Customer Registration Required UI Elements 
+•(V)	Fields: Full Name, Email, Phone, (created_at auto-set server-side)
+•	Email uniqueness validation: reject duplicate emails with a clear error message
+
+Rentals List Required UI Elements
+•(V)	Table: Rental ID, Customer Name, Equipment Name, Start Date, End Date, Status (badge), Total Cost
+•	Filter by status dropdown (All / Active / Returned / Overdue)
+•(V)	A 'Mark as Returned' button on Active rows
+
+Rentals New Required UI Elements
+•(V)	Customer dropdown (populated from all customers)
+•(XV)	Equipment dropdown (populated from available equipment only — available=True AND quantity > active rentals)
+•(XV)	Start Date, End Date (date pickers; end must be after start)
+•(XV)	Auto-compute and display Total Cost when both dates are selected (daily_rate * number of days)
+•	Validation: no double-booking — same equipment cannot be rented twice in an overlapping period
+
+Reports Required UI Elements
+•	Revenue summary: total revenue (sum of all returned rental costs), active rental revenue (sum of active)
+•	Top 3 most-rented equipment items (by number of rentals)
+•	Top 3 customers by total spend
+•	Rentals by status: a simple visual bar (CSS width % based on count vs total)
