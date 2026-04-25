@@ -52,10 +52,46 @@ equipment_data = {
         "quantity": 8,
         "description": "Directional shotgun microphone for high-quality audio recording.",
         "available": True
+    },
+    7: {
+        "id": 7,
+        "name": "Manfrotto Befree Advanced Tripod",
+        "category": "Tripod",
+        "daily_rate": 10.0,
+        "quantity": 6,
+        "description": "Lightweight and compact tripod for travel photography.",
+        "available": True
+    },
+    8: {
+        "id": 8,
+        "name": "Blackmagic Pocket Cinema Camera 6K",
+        "category": "Camera",
+        "daily_rate": 60.0,
+        "quantity": 2,
+        "description": "High-end cinema camera with Super 35 sensor and 6K recording.",
+        "available": True
+    },
+    9: {
+        "id": 9,
+        "name": "DJI Inspire 2",
+        "category": "Drone",
+        "daily_rate": 70.0,
+        "quantity": 1,
+        "description": "Professional drone with advanced flight capabilities and camera options.",
+        "available": True
+    },
+    10: {
+        "id": 10,
+        "name": "Zoom H6 Handy Recorder",
+        "category": "Audio Recorder",
+        "daily_rate": 25.0,
+        "quantity": 5,
+        "description": "Portable audio recorder with multiple input options for high-quality sound recording.",
+        "available": True
     }
 }
 
-next_equipment_id = 7
+next_equipment_id = 11
 
 customer_data = {
     1: {
@@ -78,10 +114,59 @@ customer_data = {
         "email": "charlie.brown@example.com",
         "phone": "555-555-5555",
         "created_at": "2025-03-01T00:00:00Z"
+    },
+    4: {
+        "id": 4,
+        "name": "David Williams",
+        "email": "david.williams@example.com",
+        "phone": "444-444-4444",
+        "created_at": "2025-04-01T00:00:00Z"
+    },
+    5: {
+        "id": 5,
+        "name": "Eve Thompson",
+        "email": "eve.thompson@example.com",
+        "phone": "333-333-3333",
+        "created_at": "2025-05-01T00:00:00Z"
+    },
+    6: {
+        "id": 6,
+        "name": "Frank Miller",
+        "email": "frank.miller@example.com",
+        "phone": "222-222-2222",
+        "created_at": "2025-06-01T00:00:00Z"
+    },
+    7: {
+        "id": 7,
+        "name": "Grace Lee",
+        "email": "grace.lee@example.com",
+        "phone": "111-111-1111",
+        "created_at": "2025-07-01T00:00:00Z"
+    },
+    8: {
+        "id": 8,
+        "name": "Hannah White",
+        "email": "hannah.white@example.com",
+        "phone": "000-000-0000",
+        "created_at": "2025-08-01T00:00:00Z"
+    },
+    9: {
+        "id": 9,
+        "name": "Ian Black",
+        "email": "ian.black@example.com",
+        "phone": "999-999-9999",
+        "created_at": "2025-09-01T00:00:00Z"
+    },
+    10: {
+        "id": 10,
+        "name": "Jack Green",
+        "email": "jack.green@example.com",
+        "phone": "888-888-8888",
+        "created_at": "2025-10-01T00:00:00Z"
     }
 }
 
-next_customer_id = 4
+next_customer_id = 11
 
 rental_data = {
     1: {
@@ -171,7 +256,97 @@ rental_data = {
         "end_date": "2025-06-15",
         "status": "active",
         "total_cost": 225.0
+    },
+    11: {
+        "id": 11,
+        "equipment_id": 5,
+        "customer_id": 2,
+        "start_date": "2025-06-20",
+        "end_date": "2025-06-25",
+        "status": "active",
+        "total_cost": 300.0
+    },
+    12: {
+        "id": 12,
+        "equipment_id": 6,
+        "customer_id": 3,
+        "start_date": "2025-07-01",
+        "end_date": "2025-07-05",
+        "status": "active",
+        "total_cost": 125.0
+    },
+    13: {
+        "id": 13,
+        "equipment_id": 1,
+        "customer_id": 1,
+        "start_date": "2025-07-10",
+        "end_date": "2025-07-15",
+        "status": "active",
+        "total_cost": 200.0
+    },
+    14: {
+        "id": 14,
+        "equipment_id": 2,
+        "customer_id": 2,
+        "start_date": "2025-07-20",
+        "end_date": "2025-07-25",
+        "status": "active",
+        "total_cost": 250.0
+    },
+    15: {
+        "id": 15,
+        "equipment_id": 3,
+        "customer_id": 3,
+        "start_date": "2025-08-01",
+        "end_date": "2025-08-05",
+        "status": "active",
+        "total_cost": 175.0
+    },
+    16: {
+        "id": 16,
+        "equipment_id": 4,
+        "customer_id": 1,
+        "start_date": "2025-08-10",
+        "end_date": "2025-08-15",
+        "status": "active",
+        "total_cost": 225.0
+    },
+    17: {
+        "id": 17,
+        "equipment_id": 5,
+        "customer_id": 2,
+        "start_date": "2025-08-20",
+        "end_date": "2025-08-25",
+        "status": "active",
+        "total_cost": 300.0
+    },
+    18: {
+        "id": 18,
+        "equipment_id": 6,
+        "customer_id": 3,
+        "start_date": "2025-09-01",
+        "end_date": "2025-09-05",
+        "status": "active",
+        "total_cost": 125.0
+    },
+    19: {
+        "id": 19,
+        "equipment_id": 1,
+        "customer_id": 1,
+        "start_date": "2025-09-10",
+        "end_date": "2025-09-15",
+        "status": "active",
+        "total_cost": 200.0
+    },
+    20: {
+        "id": 20,
+        "equipment_id": 2,
+        "customer_id": 2,
+        "start_date": "2025-09-20",
+        "end_date": "2025-09-25",
+        "status": "active",
+        "total_cost": 250.0
     }
 }
 
-next_rental_id = 11
+next_rental_id = 21
