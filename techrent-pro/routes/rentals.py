@@ -29,8 +29,10 @@ def check_overlap_booking(equipment_id, start_date, end_date, exclude_rental_id=
             rental["equipment_id"] == int(equipment_id)
             and str(rental.get("status", "")).lower() == "active"
         ):
-            existing_start = datetime.datetime.strptime(rental["start_date"], "%Y-%m-%d")
-            existing_end = datetime.datetime.strptime(rental["end_date"], "%Y-%m-%d")
+            existing_start = datetime.datetime.strptime(
+                rental["start_date"], "%Y-%m-%d")
+            existing_end = datetime.datetime.strptime(
+                rental["end_date"], "%Y-%m-%d")
 
             if start <= existing_end and end >= existing_start:
                 return True
@@ -53,6 +55,7 @@ def build_rental_view(rental):
         "status": str(rental.get("status", "")).title(),
         "total_cost": rental.get("total_cost", 0.0),
     }
+
 
 def validate_rental_payload(payload, partial=False):
     required_fields = [
@@ -120,11 +123,11 @@ def new_rental():
         customer_id = request.form["customer_id"]
         start_date = request.form["start_date"]
         end_date = request.form["end_date"]
-        status = request.form.get("status", "active").strip().lower()
 
         if check_overlap_booking(equipment_id, start_date, end_date):
             customers = list(db.customer_data.values())
-            equipment = [eq for eq in db.equipment_data.values() if eq["available"]]
+            equipment = [eq for eq in db.equipment_data.values()
+                         if eq["available"]]
             return (
                 render_template(
                     "rentals/form.html",
@@ -145,7 +148,7 @@ def new_rental():
             "customer_id": int(customer_id),
             "start_date": start_date,
             "end_date": end_date,
-            "status": status if status in {"active", "returned", "overdue"} else "active",
+            "status": "active",
             "total_cost": total_cost,
         }
         db.next_rental_id += 1
@@ -194,7 +197,8 @@ def edit_rental(rental_id):
                     customers=customers,
                     equipment=equipment,
                     rental=request.form,
-                    form_action=url_for("rentals.edit_rental", rental_id=rental_id),
+                    form_action=url_for(
+                        "rentals.edit_rental", rental_id=rental_id),
                     submit_label="Save changes",
                     error_message="The selected equipment is already booked for the specified dates.",
                 ),
@@ -205,8 +209,10 @@ def edit_rental(rental_id):
         rental["customer_id"] = int(customer_id)
         rental["start_date"] = start_date
         rental["end_date"] = end_date
-        rental["status"] = status if status in {"active", "returned", "overdue"} else "active"
-        rental["total_cost"] = calculate_total_cost(equipment_id, start_date, end_date)
+        rental["status"] = status if status in {
+            "active", "returned", "overdue"} else "active"
+        rental["total_cost"] = calculate_total_cost(
+            equipment_id, start_date, end_date)
         return redirect(url_for("rentals.get_all_rentals"))
 
     customers = list(db.customer_data.values())
@@ -226,7 +232,8 @@ def delete_rental(rental_id):
     db.rental_data.pop(rental_id, None)
     return redirect(url_for("rentals.get_all_rentals"))
 
-@rentals_bp.route("/rentals/<int:rental_id>/return", methods=[ "POST"])
+
+@rentals_bp.route("/rentals/<int:rental_id>/return", methods=["POST"])
 def return_rental(rental_id):
     rental = db.rental_data.get(rental_id)
     if not rental:

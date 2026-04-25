@@ -4,6 +4,7 @@ from routes.dashboard import dashboard
 from routes.equipment import equipment_bp
 from routes.customers import customers_bp
 app = Flask(__name__)
+app.secret_key = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
 
 app.register_blueprint(dashboard)
 app.register_blueprint(rentals_bp)

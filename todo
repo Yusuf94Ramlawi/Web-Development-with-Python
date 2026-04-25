@@ -1,2 +1,58 @@
-Delete (with a JS confirm dialog)
-Pagination
+(V) AC-01 GET / returns HTTP 200 and renders the dashboard template
+(V) AC-02 KPI values are computed dynamically from the in-memory database (not hard-coded)
+(V) AC-03 Recent rentals table shows real data, sorted by rental ID descending
+(V) AC-04 Status badges use distinct colors: green = active, gray = returned, red = overdue
+(V) AC-05 All three quick-action buttons link to the correct creation form pages
+(V) AC-06 Navbar inherits from base.html and appears on every page
+
+(V) AC-01 GET /equipment returns HTTP 200 and lists all equipment items from the database
+(V) AC-02 Category dropdown is populated dynamically from the existing data (no hard-coded options)
+(V) AC-03 Clicking Delete shows a JavaScript confirmation dialog before POSTing to DELETE endpoint
+(V) AC-04 Available column shows a visual indicator (icon or badge), not just True/False text
+(V) AC-05 Add Equipment button links to the equipment creation form
+(V) AC-06 Page uses the base.html layout via Jinja2 {% extends %} and {% block %} tags
+
+(V) AC-01 GET /equipment/<id> returns HTTP 200 for a valid ID; returns HTTP 404 for an unknown ID
+(V) AC-02 The 404 page renders a user-friendly error message using the base.html layout
+(V) AC-03 Available quantity is computed as total quantity minus count of active rentals for this item
+(V) AC-04 Rental history is filtered to show only rentals for this specific equipment item
+
+(V) AC-01 GET /equipment/new renders an empty form; GET /equipment/<id>/edit pre-fills fields with current data
+#todo flash msg# AC-02 POST /equipment/new on success: creates the item, assigns an auto-increment ID, redirects to equipment list with a flash success message
+#todo flash msg# AC-03 POST /equipment/<id>/edit on success: updates the item, redirects to detail page with flash message
+AC-04 Submitting with blank required fields re-renders the form with inline error messages (e.g. 'Name is required') and does NOT clear other valid input
+AC-05 Daily Rate and Quantity inputs validate to positive numbers server-side (not just HTML5 min attribute)
+(V) AC-06 Same form.html template is used for both create and edit modes via Jinja2 conditional rendering
+
+(V) AC-01 GET /customers returns HTTP 200 with a full customer list sorted by name
+#todo flash msg# AC-02 POST /customers/new rejects duplicate emails with a flash error message and re-renders the form
+(V) AC-03 POST /customers/new on success: creates the customer, sets created_at to the current date (datetime.now().isoformat()), and redirects
+#todo# AC-04 DELETE /customers/<id> removes the customer; if the customer has active rentals, respond with a user-friendly error (do not delete)
+#todo server side validation# AC-05 Email field uses HTML5 type='email' AND server-side format validation
+
+#todo status, limit# AC-01 GET /rentals returns HTTP 200 with all rentals; status filter correctly limits rows
+(V) AC-02 POST /rentals/new calculates total_cost server-side as daily_rate × number_of_days (end - start)
+#todo err msg# AC-03 POST /rentals/new rejects overlapping bookings for the same equipment with an error message
+(V) AC-04 POST /rentals/new sets status to 'active' automatically
+#todo# AC-05 POST /rentals/<id>/return sets status to 'returned' and redirects; a rental cannot be returned twice
+#todo# AC-06 Equipment dropdown on the form shows only items where available is True
+
+AC-01 GET /reports returns HTTP 200
+AC-02 All figures are computed dynamically from the in-memory database using Python (no hard-coded numbers)
+AC-03 The status bar widths are calculated as a percentage using Jinja2 arithmetic filters or Python context variables
+AC-04 Page renders correctly even when the database has no rentals (zero-state graceful handling)
+
+AC-01 GET /api/docs renders the Swagger UI with all endpoints documented
+AC-02 Every endpoint includes: HTTP method, URL, description, request body schema (for POST/PUT), and response schema
+AC-03 All JSON API endpoints return Content-Type: application/json
+AC-04 Successful POST returns HTTP 201; successful GET returns 200; successful DELETE returns 200 or 204
+AC-05 Error responses (404, 400, 422) return a JSON body: { 'error': 'message' }
+AC-06 The API can be tested directly from the Swagger UI (Try it out button works)
+AC-07 Each route function has a Python docstring describing its purpose, parameters, and return value
+
+(V) AC-01 docker build -t techrent-pro . completes without errors on the instructor's machine (macOS/Linux)
+AC-02 docker run -p 5000:5000 techrent-pro starts the app and the dashboard loads in browser
+AC-03 The Docker Hub repo is public and the docker pull command in README.md works without login
+AC-04 requirements.txt is complete: all imports used in the code are listed with pinned versions
+AC-05 The image size is under 500 MB (use python:3.11-slim, not python:3.11)
+AC-06 No sensitive data (API keys, passwords) are baked into the image

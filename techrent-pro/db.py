@@ -63,21 +63,21 @@ customer_data = {
         "name": "Alice Johnson",
         "email": "alice.johnson@example.com",
         "phone": "123-456-7890",
-        "created_at": "2023-01-01T00:00:00Z"
+        "created_at": "2025-01-01T00:00:00Z"
     },
     2: {
         "id": 2,
         "name": "Bob Smith",
         "email": "bob.smith@example.com",
         "phone": "987-654-3210",
-        "created_at": "2023-02-01T00:00:00Z"
+        "created_at": "2025-02-01T00:00:00Z"
     },
     3: {
         "id": 3,
         "name": "Charlie Brown",
         "email": "charlie.brown@example.com",
         "phone": "555-555-5555",
-        "created_at": "2023-03-01T00:00:00Z"
+        "created_at": "2025-03-01T00:00:00Z"
     }
 }
 
@@ -88,8 +88,8 @@ rental_data = {
         "id": 1,
         "equipment_id": 1,
         "customer_id": 1,
-        "start_date": "2023-04-01",
-        "end_date": "2023-04-05",
+        "start_date": "2025-04-01",
+        "end_date": "2025-04-05",
         "status": "active",
         "total_cost": 250.0
     },
@@ -97,8 +97,8 @@ rental_data = {
         "id": 2,
         "equipment_id": 2,
         "customer_id": 2,
-        "start_date": "2023-04-10",
-        "end_date": "2023-04-12",
+        "start_date": "2025-04-10",
+        "end_date": "2025-04-12",
         "status": "returned",
         "total_cost": 80.0
     },
@@ -106,8 +106,8 @@ rental_data = {
         "id": 3,
         "equipment_id": 3,
         "customer_id": 3,
-        "start_date": "2023-04-15",
-        "end_date": "2023-04-20",
+        "start_date": "2025-04-15",
+        "end_date": "2025-04-20",
         "status": "overdue",
         "total_cost": 100.0
     },
@@ -115,8 +115,8 @@ rental_data = {
         "id": 4,
         "equipment_id": 1,
         "customer_id": 2,
-        "start_date": "2023-04-22",
-        "end_date": "2023-04-25",
+        "start_date": "2025-04-22",
+        "end_date": "2025-04-25",
         "status": "active",
         "total_cost": 150.0
     },
@@ -124,8 +124,8 @@ rental_data = {
         "id": 5,
         "equipment_id": 4,
         "customer_id": 1,
-        "start_date": "2023-04-26",
-        "end_date": "2023-04-30",
+        "start_date": "2025-04-26",
+        "end_date": "2025-04-30",
         "status": "active",
         "total_cost": 180.0
     },
@@ -133,8 +133,8 @@ rental_data = {
         "id": 6,
         "equipment_id": 5,
         "customer_id": 3,
-        "start_date": "2023-05-01",
-        "end_date": "2023-05-05",
+        "start_date": "2025-05-01",
+        "end_date": "2025-05-05",
         "status": "active",
         "total_cost": 120.0
     },
@@ -142,8 +142,8 @@ rental_data = {
         "id": 7,
         "equipment_id": 6,
         "customer_id": 1,
-        "start_date": "2023-05-10",
-        "end_date": "2023-05-15",
+        "start_date": "2025-05-10",
+        "end_date": "2025-05-15",
         "status": "active",
         "total_cost": 75.0
     },
@@ -151,24 +151,24 @@ rental_data = {
         "id": 8,
         "equipment_id": 2,
         "customer_id": 3,
-        "start_date": "2023-05-20",
-        "end_date": "2023-05-25",
+        "start_date": "2025-05-20",
+        "end_date": "2025-05-25",
         "status": "active",
         "total_cost": 200.0},
     9: {
         "id": 9,
         "equipment_id": 3,
         "customer_id": 2,
-        "start_date": "2023-05-30",
-        "end_date": "2023-06-05",
+        "start_date": "2025-05-30",
+        "end_date": "2025-06-05",
         "status": "active",
         "total_cost": 150.0},
     10: {
         "id": 10,
         "equipment_id": 4,
         "customer_id": 1,
-        "start_date": "2023-06-10",
-        "end_date": "2023-06-15",
+        "start_date": "2025-06-10",
+        "end_date": "2025-06-15",
         "status": "active",
         "total_cost": 225.0
     }
