@@ -1,6 +1,7 @@
 import datetime
 import db
 from flask import Blueprint, jsonify, redirect, render_template, request, url_for
+from utils.pagination import Paginator
 
 rentals_bp = Blueprint("rentals", __name__)
 
@@ -106,13 +107,15 @@ def get_all_rentals():
             or query_lower in rental["equipment_category"].lower()
         ]
 
+    pager = Paginator()
+    result = pager.paginate(rentals)
     return render_template(
         "rentals/list.html",
-        rentals=rentals,
+        rentals=result['data'],
         categories=categories,
         selected_category=selected_category,
         search_query=search_query,
-        row_limit=10,
+        pagination=result['pagination'],
     )
 
 

@@ -26,21 +26,25 @@ class Paginator:
     def paginate(self, items):
         """Paginate a list and return pagination metadata."""
         total = len(items)
-        total_pages = ceil(total / self.per_page) if total > 0 else 0
-        start = (self.page - 1) * self.per_page
+        total_pages = max(1, ceil(total / self.per_page)) if total > 0 else 1
+        
+        # Clamp page to valid range
+        current_page = max(1, min(self.page, total_pages))
+        
+        start = (current_page - 1) * self.per_page
         end = start + self.per_page
         page_items = items[start:end]
 
         return {
             "data": page_items,
             "pagination": {
-                "page": self.page,
+                "page": current_page,
                 "per_page": self.per_page,
                 "total_items": total,
                 "total_pages": total_pages,
-                "has_next": self.page < total_pages,
-                "has_prev": self.page > 1,
-                "next_page": self.page + 1 if self.page < total_pages else None,
-                "prev_page": self.page - 1 if self.page > 1 else None,
+                "has_next": current_page < total_pages,
+                "has_prev": current_page > 1,
+                "next_page": current_page + 1 if current_page < total_pages else None,
+                "prev_page": current_page - 1 if current_page > 1 else None,
             }
         }

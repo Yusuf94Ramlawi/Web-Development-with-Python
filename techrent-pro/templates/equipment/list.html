@@ -43,7 +43,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for equipment in equipment_list.values() %}
+          {% for equipment in equipment_list %}
           <tr>
             <td>{{ equipment.id }}</td>
             <td>{{ equipment.name }}</td>
@@ -76,6 +76,25 @@
         </tbody>
       </table>
     </div>
+    {% if pagination.total_pages > 1 %}
+    <div class="card-footer bg-white border-top d-flex justify-content-center">
+      <nav aria-label="Equipment pagination">
+        <ul class="pagination mb-0">
+          <li class="page-item {% if pagination.page == 1 %}disabled{% endif %}">
+            <a class="page-link" href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ pagination.page-1 }}" tabindex="-1">Previous</a>
+          </li>
+          {% for p in range(1, pagination.total_pages+1) %}
+          <li class="page-item {% if p == pagination.page %}active{% endif %}">
+            <a class="page-link" href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ p }}">{{ p }}</a>
+          </li>
+          {% endfor %}
+          <li class="page-item {% if pagination.page == pagination.total_pages %}disabled{% endif %}">
+            <a class="page-link" href="?q={{ search_query|urlencode }}&category={{ selected_category|urlencode }}&page={{ pagination.page+1 }}">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
   </div>
 </div>
 

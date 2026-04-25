@@ -1,24 +1,28 @@
 
 import db
 from flask import Blueprint, redirect, render_template, request, url_for
+from utils.pagination import Paginator
 
 equipment_bp = Blueprint("equipment", __name__, url_prefix="/equipment")
 
 
 @equipment_bp.route('/')
 def equipment():
-    equipments = db.equipment_data
-    categories = set(e['category'] for e in equipments.values())
+    selected_category = request.args.get('category', '').strip()
+    search_query = request.args.get('q', '').strip()
 
-    selected_category = request.args.get('category')
-    search_query = request.args.get('q')
+    equipments = list(db.equipment_data.values())
+    categories = set(e['category'] for e in equipments)
+
     if selected_category:
-        equipments = {id: eq for id, eq in equipments.items(
-        ) if eq['category'] == selected_category}
+        equipments = [eq for eq in equipments if eq['category']
+                      == selected_category]
     if search_query:
-        equipments = {id: eq for id, eq in equipments.items(
-        ) if search_query.lower() in eq['name'].lower()}
-    return render_template('equipment/list.html', equipment_list=equipments, categories=categories, selected_category=selected_category, search_query=search_query)
+        equipments = [eq for eq in equipments if search_query.lower()
+                      in eq['name'].lower()]
+    pager = Paginator()
+    result = pager.paginate(equipments)
+    return render_template('equipment/list.html', equipment_list=result['data'], categories=categories, selected_category=selected_category, search_query=search_query, pagination=result['pagination'])
 
 
 @equipment_bp.route('/add', methods=['GET', 'POST'])
