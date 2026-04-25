@@ -6,8 +6,8 @@ from utils.pagination import Paginator
 equipment_bp = Blueprint("equipment", __name__, url_prefix="/equipment")
 
 
-@equipment_bp.route('/')
-def equipment():
+@equipment_bp.route('/', methods=['GET'])
+def get_equipment():
     selected_category = request.args.get('category', '').strip()
     search_query = request.args.get('q', '').strip()
 
@@ -39,7 +39,7 @@ def add_equipment():
             "available": (from_data.get('available') == '1')
         }
         db.next_equipment_id += 1
-        return redirect(url_for('equipment.equipment'))
+        return redirect(url_for('equipment.get_equipment'))
 
     categories = set(e['category'] for e in db.equipment_data.values())
     return render_template('equipment/form.html', form_data={}, categories=categories, mode='add')
@@ -63,7 +63,7 @@ def edit_equipment(id):
         equipment['description'] = from_data.get('description')
         equipment['available'] = (from_data.get('available') == '1')
 
-        return redirect(url_for('equipment.equipment'))
+        return redirect(url_for('equipment.get_equipment'))
     categories = set(e['category'] for e in db.equipment_data.values())
     return render_template('equipment/form.html', id=id, form_data=equipment, categories=categories, mode='edit')
 
@@ -72,7 +72,7 @@ def edit_equipment(id):
 def delete_equipment(id):
     if id in db.equipment_data:
         del db.equipment_data[id]
-    return redirect(url_for('equipment.equipment'))
+    return redirect(url_for('equipment.get_equipment'))
 
 
 @equipment_bp.route('/<int:id>')

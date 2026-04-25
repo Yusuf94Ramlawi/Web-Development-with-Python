@@ -7,7 +7,6 @@ from routes.dashboard import dashboard
 from routes.equipment import equipment_bp
 from routes.customers import customers_bp
 from routes.reports import reports_bp
-from routes.api import api_bp
 
 
 app = Flask(__name__)
@@ -20,7 +19,6 @@ app.register_blueprint(rentals_bp)
 app.register_blueprint(equipment_bp)
 app.register_blueprint(customers_bp)
 app.register_blueprint(reports_bp)
-app.register_blueprint(api_bp)
 
 swagger = Swagger(app)
 
