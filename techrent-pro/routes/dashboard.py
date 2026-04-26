@@ -6,6 +6,15 @@ dashboard = Blueprint("dashboard", __name__)
 
 @dashboard.route("/")
 def index():
+    """
+    Render dashboard metrics and recent rentals.
+
+    Args:
+        None
+
+    Returns:
+        Response: Rendered dashboard page.
+    """
     customers = db.customer_data
     equipments = db.equipment_data
     rentals = db.rental_data

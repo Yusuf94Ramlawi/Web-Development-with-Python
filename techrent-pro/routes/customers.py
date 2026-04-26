@@ -8,6 +8,15 @@ customers_bp = Blueprint("customers", __name__, url_prefix="/customers")
 
 @customers_bp.route('/')
 def customers():
+    """
+    List customers with optional search and pagination.
+
+    Args:
+        None
+
+    Returns:
+        Response: Rendered customers list page.
+    """
     q = request.args.get('q', '').strip().lower()
     customers = customer_service.get_all_customers()
     if q:
@@ -21,6 +30,15 @@ def customers():
 
 @customers_bp.route('/add', methods=['GET', 'POST'])
 def add_customer():
+    """
+    Create a customer from form input.
+
+    Args:
+        None
+
+    Returns:
+        Response: Customer form or redirect to customer list on success.
+    """
     if request.method == 'POST':
         form_data = request.form
         name = form_data.get('name', '').strip()
@@ -33,19 +51,29 @@ def add_customer():
         )
 
         if errors:
-            # Flash first error message
-            first_error = next(iter(errors.values()))
-            flash(first_error, 'danger')
-            return render_template('customers/form.html', form_data=form_data)
+            return render_template(
+                'customers/form.html',
+                form_data={'name': name, 'email': email, 'phone': phone},
+                errors=errors
+            ), 400
 
         customer_service.create_customer(name, email, phone)
         flash('Customer registered successfully!', 'success')
         return redirect(url_for('customers.customers'))
-    return render_template('customers/form.html', form_data={})
+    return render_template('customers/form.html', form_data={}, errors={})
 
 
 @customers_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_customer(id):
+    """
+    Edit an existing customer.
+
+    Args:
+        id: Customer identifier.
+
+    Returns:
+        Response: Customer form or redirect to customer list on success.
+    """
     customer = customer_service.get_customer_by_id(id)
     if not customer:
         return render_template('404.html', message="Customer not found."), 404
@@ -62,21 +90,37 @@ def edit_customer(id):
         )
 
         if errors:
-            # Flash first error message
-            first_error = next(iter(errors.values()))
-            flash(first_error, 'danger')
             form_data = {'name': name, 'email': email, 'phone': phone}
-            return render_template('customers/form.html', form_data=form_data, id=id)
+            return render_template(
+                'customers/form.html',
+                form_data=form_data,
+                id=id,
+                errors=errors
+            ), 400
 
         customer_service.update_customer(id, name, email, phone)
         flash('Customer updated successfully!', 'success')
         return redirect(url_for('customers.customers'))
 
-    return render_template('customers/form.html', form_data=customer, id=id)
+    return render_template(
+        'customers/form.html',
+        form_data=customer,
+        id=id,
+        errors={}
+    )
 
 
 @customers_bp.route('/delete/<int:id>', methods=['POST'])
 def delete_customer(id):
+    """
+    Delete a customer.
+
+    Args:
+        id: Customer identifier.
+
+    Returns:
+        Response: Redirect to customer list with flash message.
+    """
     success, message = customer_service.delete_customer(id)
     if success:
         flash(message, 'success')

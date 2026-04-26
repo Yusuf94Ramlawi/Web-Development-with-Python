@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
+{% block nav_active_dashboard %}active{% endblock %}
+{% from '_macros.html' import status_badge %}
 
 {% block content %}
-{% set status_classes = {
-'active': 'bg-success',
-'returned': 'bg-secondary',
-'overdue': 'bg-danger'
-} %}
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h2 class="fw-semibold">Dashboard</h2>
 </div>
@@ -71,10 +68,7 @@
                         <td>{{ rental.equipment_name }}</td>
                         <td>{{ rental.start_date }}</td>
                         <td>
-                            <span
-                                class="badge {{ status_classes.get(rental.status, 'bg-warning text-dark') }} text-capitalize">
-                                {{ rental.status }}
-                            </span>
+                            {{ status_badge(rental.status) }}
                         </td>
                     </tr>
                     {% endfor %}

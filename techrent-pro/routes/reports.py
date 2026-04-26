@@ -8,6 +8,15 @@ reports_bp = Blueprint("reports", __name__, url_prefix="/reports")
 
 @reports_bp.route('/')
 def reports():
+    """
+    Render analytics and summary report metrics.
+
+    Args:
+        None
+
+    Returns:
+        Response: Rendered reports page.
+    """
     # Revenue calculations
     total_revenue = sum(
         r["total_cost"] for r in db.rental_data.values()

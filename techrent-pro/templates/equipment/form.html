@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}{{ 'Edit Equipment' if mode == 'edit' else 'Add Equipment' }}{% endblock %}
+{% block nav_active_equipment %}active{% endblock %}
 {% block content %}
 <h1>{{ 'Edit Equipment' if mode == 'edit' else 'Add New Equipment' }}</h1>
 <div class="card p-4 mb-4 shadow-sm border-0">

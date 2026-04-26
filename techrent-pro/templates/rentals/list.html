@@ -1,13 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Rentals{% endblock %}
+{% block nav_active_rentals %}active{% endblock %}
+{% from '_macros.html' import status_badge %}
 
 {% block content %}
-{% set status_classes = {
-'active': 'bg-success',
-'returned': 'bg-secondary',
-'overdue': 'bg-danger'
-} %}
-
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h2 class="fw-semibold">Rentals</h2>
     <a href="/rentals/new" class="btn btn-primary">+ New Rental</a>
@@ -65,10 +61,7 @@
                         <td>{{ rental.start_date }} to {{ rental.end_date }}</td>
                         <td>${{ rental.total_cost }}</td>
                         <td>
-                            <span
-                                class="badge {{ status_classes.get((rental.status or '')|lower, 'bg-warning text-dark') }} text-capitalize">
-                                {{ rental.status }}
-                            </span>
+                            {{ status_badge(rental.status) }}
                         </td>
                         <td>
                             {% if rental.status == 'Active' %}

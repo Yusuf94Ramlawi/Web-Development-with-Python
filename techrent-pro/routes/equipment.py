@@ -11,6 +11,15 @@ equipment_bp = Blueprint("equipment", __name__, url_prefix="/equipment")
 
 @equipment_bp.route('/', methods=['GET'])
 def get_equipment():
+    """
+    List equipment with optional category/search filtering and pagination.
+
+    Args:
+        None
+
+    Returns:
+        Response: Rendered equipment list page.
+    """
     selected_category = request.args.get('category', '').strip()
     search_query = request.args.get('q', '').strip()
 
@@ -30,6 +39,15 @@ def get_equipment():
 
 @equipment_bp.route('/add', methods=['GET', 'POST'])
 def add_equipment():
+    """
+    Create a new equipment record from form input.
+
+    Args:
+        None
+
+    Returns:
+        Response: Equipment form or redirect to equipment list on success.
+    """
     if request.method == 'POST':
         form_data = request.form
 
@@ -63,6 +81,15 @@ def add_equipment():
 
 @equipment_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_equipment(id):
+    """
+    Edit an existing equipment record.
+
+    Args:
+        id: Equipment identifier.
+
+    Returns:
+        Response: Equipment form or redirect to equipment details on success.
+    """
     equipment = equipment_service.get_equipment_by_id(id)
     if not equipment:
         return render_template('404.html', message="Equipment not found."), 404
@@ -105,12 +132,30 @@ def edit_equipment(id):
 
 @equipment_bp.route('/delete/<int:id>', methods=['POST'])
 def delete_equipment(id):
+    """
+    Delete an equipment record.
+
+    Args:
+        id: Equipment identifier.
+
+    Returns:
+        Response: Redirect to equipment list.
+    """
     equipment_service.delete_equipment(id)
     return redirect(url_for('equipment.get_equipment'))
 
 
 @equipment_bp.route('/<int:id>')
 def view_equipment(id):
+    """
+    Show one equipment record and related rental history.
+
+    Args:
+        id: Equipment identifier.
+
+    Returns:
+        Response: Rendered equipment details page.
+    """
     equipment = equipment_service.get_equipment_by_id(id)
     if not equipment:
         return render_template('404.html', message="Equipment not found."), 404

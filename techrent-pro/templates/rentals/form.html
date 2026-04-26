@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% set is_edit = rental and rental.id %}
 {% block title %}{{ 'Edit Rental' if is_edit else 'Add Rental' }}{% endblock %}
+{% block nav_active_rentals %}active{% endblock %}
 
 {% block content %}
 <h1 class="h3 mb-4">{{ 'Edit Rental' if is_edit else 'Add New Rental' }}</h1>
 
-{% if error_message %}
-<div class="alert alert-danger" role="alert">{{ error_message }}</div>
+{% if errors and errors.date_range %}
+<div class="alert alert-danger" role="alert">{{ errors.date_range }}</div>
+{% elif errors and errors.date_format %}
+<div class="alert alert-danger" role="alert">{{ errors.date_format }}</div>
 {% endif %}
 
 <div class="card border-0 shadow-sm">
@@ -14,42 +17,62 @@
         <form method="post" action="{{ form_action or '/rentals/new' }}">
             <div class="mb-3">
                 <label for="customer_id" class="form-label">Customer:</label>
-                <select id="customer_id" name="customer_id" class="form-select" required>
+                <select id="customer_id" name="customer_id"
+                    class="form-select {% if errors and errors.customer_id %}is-invalid{% endif %}" required>
                     <option value="">Select customer</option>
                     {% for customer in customers %}
-                    <option value="{{ customer.id }}" {% if rental and rental.customer_id|int==customer.id %}selected{%
-                        endif %}>
+                    <option value="{{ customer.id }}" {% if rental and rental.customer_id|int==customer.id %}selected{% endif %}>
                         {{ customer.name }}
                     </option>
                     {% endfor %}
                 </select>
+                {% if errors and errors.customer_id %}
+                <div class="invalid-feedback">{{ errors.customer_id }}</div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
                 <label for="equipment_id" class="form-label">Equipment:</label>
-                <select id="equipment_id" name="equipment_id" class="form-select" required>
+                <select id="equipment_id" name="equipment_id"
+                    class="form-select {% if errors and errors.equipment_id %}is-invalid{% endif %}" required>
                     <option value="">Select equipment</option>
                     {% for item in equipment %}
-                    <option value="{{ item.id }}" {% if rental and rental.equipment_id|int==item.id %}selected{% endif
-                        %}>
+                    <option value="{{ item.id }}" data-daily-rate="{{ item.daily_rate }}" {% if rental and rental.equipment_id|int==item.id %}selected{% endif %}>
                         {{ item.name }} ({{ item.category }})
                     </option>
                     {% endfor %}
                 </select>
+                {% if errors and errors.equipment_id %}
+                <div class="invalid-feedback">{{ errors.equipment_id }}</div>
+                {% endif %}
             </div>
 
             <div class="row g-3 mb-3">
                 <div class="col-12 col-md-6">
                     <label for="start_date" class="form-label">Start Date:</label>
                     <input type="date" id="start_date" name="start_date"
-                        value="{{ rental.start_date if rental else '' }}" class="form-control" required />
+                        value="{{ rental.start_date if rental else '' }}"
+                        class="form-control {% if errors and errors.start_date %}is-invalid{% endif %}" required />
+                    {% if errors and errors.start_date %}
+                    <div class="invalid-feedback">{{ errors.start_date }}</div>
+                    {% endif %}
                 </div>
                 <div class="col-12 col-md-6">
                     <label for="end_date" class="form-label">End Date:</label>
                     <input type="date" id="end_date" name="end_date" value="{{ rental.end_date if rental else '' }}"
-                        class="form-control" required />
+                        class="form-control {% if errors and errors.end_date %}is-invalid{% endif %}" required />
+                    {% if errors and errors.end_date %}
+                    <div class="invalid-feedback">{{ errors.end_date }}</div>
+                    {% endif %}
                 </div>
             </div>
+
+            <div class="mb-3">
+                <label class="form-label">Total Cost</label>
+                <div class="form-control bg-light" id="total_cost_display">$0.00</div>
+                <div class="form-text">Calculated when equipment, start date, and end date are selected.</div>
+            </div>
+
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">{{ submit_label or 'Save rental' }}</button>
                 <a href="/rentals" class="btn btn-outline-secondary">Cancel</a>
@@ -57,4 +80,54 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        const equipmentSelect = document.getElementById('equipment_id');
+        const startInput = document.getElementById('start_date');
+        const endInput = document.getElementById('end_date');
+        const totalDisplay = document.getElementById('total_cost_display');
+
+        function calculateTotalCost() {
+            const selectedOption = equipmentSelect.options[equipmentSelect.selectedIndex];
+            const rate = parseFloat(selectedOption ? selectedOption.dataset.dailyRate : '0');
+            const start = startInput.value;
+            const end = endInput.value;
+
+            if (!start) {
+                endInput.min = '';
+                totalDisplay.textContent = '$0.00';
+                return;
+            }
+
+            const minEndDate = new Date(start);
+            minEndDate.setDate(minEndDate.getDate() + 1);
+            endInput.min = minEndDate.toISOString().split('T')[0];
+
+            if (!rate || !end) {
+                totalDisplay.textContent = '$0.00';
+                return;
+            }
+
+            const startDate = new Date(start + 'T00:00:00');
+            const endDate = new Date(end + 'T00:00:00');
+            const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+            if (days <= 0) {
+                totalDisplay.textContent = '$0.00';
+                return;
+            }
+
+            const total = rate * days;
+            totalDisplay.textContent = '$' + total.toFixed(2);
+        }
+
+        equipmentSelect.addEventListener('change', calculateTotalCost);
+        startInput.addEventListener('change', calculateTotalCost);
+        endInput.addEventListener('change', calculateTotalCost);
+        calculateTotalCost();
+    })();
+</script>
 {% endblock %}

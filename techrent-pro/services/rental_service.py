@@ -25,7 +25,7 @@ def calculate_total_cost(equipment_id, start_date, end_date):
     daily_rate = equipment.get("daily_rate", 0.0)
     start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
     end = datetime.datetime.strptime(end_date, "%Y-%m-%d")
-    days = (end - start).days + 1
+    days = (end - start).days
     return round(daily_rate * days, 2)
 
 
@@ -115,8 +115,7 @@ def validate_rental_data(data, for_api=False):
         try:
             start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
             end = datetime.datetime.strptime(end_date, "%Y-%m-%d")
-            days = (end - start).days + 1
-            if days <= 0:
+            if end <= start:
                 errors['date_range'] = 'End date must be after start date'
         except ValueError:
             errors['date_format'] = 'Invalid date format. Use YYYY-MM-DD'

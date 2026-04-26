@@ -1,0 +1,13 @@
+{% macro status_badge(status) -%}
+{% set normalized = (status|string|lower).strip() %}
+{% set style_map = {
+'active': 'bg-success',
+'returned': 'bg-secondary',
+'overdue': 'bg-danger',
+'yes': 'bg-success',
+'no': 'bg-danger'
+} %}
+<span class="badge {{ style_map.get(normalized, 'bg-warning text-dark') }} text-capitalize">
+    {{ status }}
+</span>
+{%- endmacro %}
