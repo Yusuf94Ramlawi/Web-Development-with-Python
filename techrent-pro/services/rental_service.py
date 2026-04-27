@@ -236,6 +236,16 @@ def get_all_rentals():
     return list(db.rental_data.values())
 
 
+def get_all_rentals_view():
+    """
+    Get all rentals enriched with customer and equipment display fields.
+
+    Returns:
+        list: List of denormalized rental view dictionaries
+    """
+    return [build_rental_view(rental) for rental in get_all_rentals()]
+
+
 def build_rental_view(rental):
     """
     Build a rental view with denormalized customer and equipment data.

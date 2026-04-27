@@ -3,8 +3,8 @@
 {% block nav_active_equipment %}active{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <a href="/equipment" class="btn btn-secondary mb-3">Back to Equipment List</a>
-    <a href="/equipment/edit/{{ equipment.id }}" url="" class="btn btn-primary mb-3">Edit</a>
+    <a href="{{ url_for('equipment.get_equipment') }}" class="btn btn-secondary mb-3">Back to Equipment List</a>
+    <a href="{{ url_for('equipment.edit_equipment', id=equipment.id) }}" url="" class="btn btn-primary mb-3">Edit</a>
 </div>
 <div class="card shadow-sm mb-4">
     <div class="card-body">

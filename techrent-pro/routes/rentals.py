@@ -1,9 +1,30 @@
-import db
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 from utils.pagination import Paginator
-from services import rental_service
+from services import frontend_api_service
 
 rentals_bp = Blueprint("rentals", __name__)
+
+
+def _load_rental_form_data(include_all_equipment=False):
+    """Fetch customers and equipment options for rental form pages via API."""
+    customers_status, customers_payload = frontend_api_service.get(
+        '/api/customers')
+    customers = (
+        customers_payload
+        if customers_status == 200 and isinstance(customers_payload, list)
+        else []
+    )
+
+    equipment_path = '/api/equipment' if include_all_equipment else '/api/equipment/available'
+    equipment_status, equipment_payload = frontend_api_service.get(
+        equipment_path)
+    equipment = (
+        equipment_payload
+        if equipment_status == 200 and isinstance(equipment_payload, list)
+        else []
+    )
+
+    return customers, equipment
 
 
 @rentals_bp.route("/rentals", methods=["GET"])
@@ -20,10 +41,12 @@ def get_all_rentals():
     selected_status = request.args.get("status", "").strip().lower()
     search_query = request.args.get("q", "").strip()
 
-    rentals = [
-        rental_service.build_rental_view(rental)
-        for rental in rental_service.get_all_rentals()
-    ]
+    status_code, payload = frontend_api_service.get('/api/rentals')
+    rentals = payload if status_code == 200 and isinstance(
+        payload, list) else []
+
+    if status_code != 200:
+        flash('Unable to load rentals from API.', 'danger')
 
     statuses = ["active", "returned", "overdue"]
 
@@ -31,7 +54,7 @@ def get_all_rentals():
         rentals = [
             rental
             for rental in rentals
-            if rental["status"].lower() == selected_status
+            if rental.get("status", "").lower() == selected_status
         ]
 
     if search_query:
@@ -39,8 +62,8 @@ def get_all_rentals():
         rentals = [
             rental
             for rental in rentals
-            if query_lower in rental["customer_name"].lower()
-            or query_lower in rental["equipment_name"].lower()
+            if query_lower in rental.get("customer_name", "").lower()
+            or query_lower in rental.get("equipment_name", "").lower()
         ]
 
     pager = Paginator()
@@ -74,10 +97,14 @@ def new_rental():
             "end_date": request.form.get("end_date", "").strip(),
         }
 
-        errors, validated = rental_service.validate_rental_data(form_data)
-        if errors:
-            customers = list(db.customer_data.values())
-            equipment = rental_service.get_available_equipment()
+        create_status, payload = frontend_api_service.post(
+            '/api/rentals',
+            json_data=form_data,
+        )
+        if create_status != 201:
+            customers, equipment = _load_rental_form_data(
+                include_all_equipment=False)
+            errors = frontend_api_service.extract_errors(payload)
             return (
                 render_template(
                     "rentals/form.html",
@@ -91,41 +118,9 @@ def new_rental():
                 400,
             )
 
-        equipment_id = validated["equipment_id"]
-        customer_id = validated["customer_id"]
-        start_date = validated["start_date"]
-        end_date = validated["end_date"]
-
-        if rental_service.check_overlap_booking(
-            equipment_id, start_date, end_date
-        ):
-            customers = list(db.customer_data.values())
-            equipment = rental_service.get_available_equipment()
-            return (
-                render_template(
-                    "rentals/form.html",
-                    customers=customers,
-                    equipment=equipment,
-                    rental=form_data,
-                    form_action=url_for("rentals.new_rental"),
-                    submit_label="Add rental",
-                    errors={
-                        "date_range": (
-                            "The selected equipment is already booked for "
-                            "the specified dates."
-                        )
-                    },
-                ),
-                400,
-            )
-
-        rental_service.create_rental(
-            equipment_id, customer_id, start_date, end_date
-        )
         return redirect(url_for("rentals.get_all_rentals"))
 
-    customers = list(db.customer_data.values())
-    equipment = rental_service.get_available_equipment()
+    customers, equipment = _load_rental_form_data(include_all_equipment=False)
     return render_template(
         "rentals/form.html",
         customers=customers,
@@ -148,14 +143,11 @@ def view_rental(rental_id):
     Returns:
         Response: Rendered rental details or redirect when missing.
     """
-    rental = rental_service.get_rental_by_id(rental_id)
-    if not rental:
+    status_code, rental = frontend_api_service.get(f'/api/rentals/{rental_id}')
+    if status_code != 200:
         return redirect(url_for("rentals.get_all_rentals"))
 
-    return render_template(
-        "rentals/detail.html",
-        rental=rental_service.build_rental_view(rental)
-    )
+    return redirect(url_for("rentals.get_all_rentals"))
 
 
 @rentals_bp.route("/rentals/<int:rental_id>/edit", methods=["GET", "POST"])
@@ -169,8 +161,9 @@ def edit_rental(rental_id):
     Returns:
         Response: Rental form or redirect to rental list on success.
     """
-    rental = rental_service.get_rental_by_id(rental_id)
-    if not rental:
+    rental_status, rental = frontend_api_service.get(
+        f'/api/rentals/{rental_id}')
+    if rental_status != 200:
         return redirect(url_for("rentals.get_all_rentals"))
 
     if request.method == "POST":
@@ -182,10 +175,14 @@ def edit_rental(rental_id):
             "status": request.form.get("status", "active").strip().lower(),
         }
 
-        errors, validated = rental_service.validate_rental_data(form_data)
-        if errors:
-            customers = list(db.customer_data.values())
-            equipment = list(db.equipment_data.values())
+        update_status, payload = frontend_api_service.put(
+            f'/api/rentals/{rental_id}',
+            json_data=form_data,
+        )
+        if update_status != 200:
+            customers, equipment = _load_rental_form_data(
+                include_all_equipment=True)
+            errors = frontend_api_service.extract_errors(payload)
             return (
                 render_template(
                     "rentals/form.html",
@@ -201,44 +198,9 @@ def edit_rental(rental_id):
                 400,
             )
 
-        equipment_id = validated["equipment_id"]
-        customer_id = validated["customer_id"]
-        start_date = validated["start_date"]
-        end_date = validated["end_date"]
-        status = validated["status"]
-
-        if rental_service.check_overlap_booking(
-            equipment_id, start_date, end_date, exclude_rental_id=rental_id
-        ):
-            customers = list(db.customer_data.values())
-            equipment = list(db.equipment_data.values())
-            return (
-                render_template(
-                    "rentals/form.html",
-                    customers=customers,
-                    equipment=equipment,
-                    rental=form_data,
-                    form_action=url_for(
-                        "rentals.edit_rental", rental_id=rental_id
-                    ),
-                    submit_label="Save changes",
-                    errors={
-                        "date_range": (
-                            "The selected equipment is already booked for "
-                            "the specified dates."
-                        )
-                    },
-                ),
-                400,
-            )
-
-        rental_service.update_rental(
-            rental_id, equipment_id, customer_id, start_date, end_date, status
-        )
         return redirect(url_for("rentals.get_all_rentals"))
 
-    customers = list(db.customer_data.values())
-    equipment = list(db.equipment_data.values())
+    customers, equipment = _load_rental_form_data(include_all_equipment=True)
     return render_template(
         "rentals/form.html",
         customers=customers,
@@ -248,22 +210,6 @@ def edit_rental(rental_id):
         submit_label="Save changes",
         errors={},
     )
-
-
-@rentals_bp.route("/rentals/<int:rental_id>/delete", methods=["POST"])
-def delete_rental(rental_id):
-    """
-    Delete a rental.
-
-    Args:
-        rental_id: Rental identifier.
-
-    Returns:
-        Response: Redirect to rental list.
-    """
-    rental_service.get_rental_by_id(rental_id)  # Check existence
-    db.rental_data.pop(rental_id, None)
-    return redirect(url_for("rentals.get_all_rentals"))
 
 
 @rentals_bp.route("/rentals/<int:rental_id>/return", methods=["POST"])
@@ -277,12 +223,8 @@ def return_rental(rental_id):
     Returns:
         Response: Redirect to rental list.
     """
-    rental = rental_service.get_rental_by_id(rental_id)
-    if not rental:
-        return redirect(url_for("rentals.get_all_rentals"))
-    if str(rental.get("status", "")).lower() != "active":
-        return redirect(url_for("rentals.get_all_rentals"))
-
-    rental_service.update_rental_status(rental_id, "returned")
+    status_code, payload = frontend_api_service.put(
+        f'/api/rentals/{rental_id}/return')
+    if status_code != 200:
+        flash(payload.get('error', 'Unable to return rental'), 'danger')
     return redirect(url_for("rentals.get_all_rentals"))
-

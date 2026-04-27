@@ -4,6 +4,9 @@
 {% block content %}
 <h1>{{ 'Edit Equipment' if mode == 'edit' else 'Add New Equipment' }}</h1>
 <div class="card p-4 mb-4 shadow-sm border-0">
+    {% if errors and errors.form %}
+    <div class="alert alert-danger" role="alert">{{ errors.form }}</div>
+    {% endif %}
     <form method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Name:</label>
@@ -68,7 +71,7 @@
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">{{ 'Save Changes' if mode == 'edit' else 'Add Equipment'
                 }}</button>
-            <a href="/equipment" class="btn btn-secondary">Cancel</a>
+            <a href="{{ url_for('equipment.get_equipment') }}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </div>

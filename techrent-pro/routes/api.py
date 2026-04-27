@@ -3,14 +3,23 @@ API routes for TechRent Pro.
 RESTful API endpoints for equipment, customers, and rentals.
 """
 from flask import Blueprint, jsonify, request
-from services import equipment_service, customer_service, rental_service
+from services import (
+  equipment_service,
+  customer_service,
+  rental_service,
+  dashboard_service,
+  report_service,
+)
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
-def _json_error(message, status_code):
-    """Return a standardized JSON error payload."""
-    return jsonify({"error": str(message)}), status_code
+def _json_error(message, status_code, errors=None):
+  """Return a standardized JSON error payload."""
+  payload = {"error": str(message)}
+  if errors:
+    payload["errors"] = errors
+  return jsonify(payload), status_code
 
 
 def _first_error(errors, fallback="Validation failed"):
@@ -69,6 +78,20 @@ def get_equipment():
                 type: boolean
     """
     return jsonify(equipment_service.get_all_equipment()), 200
+
+
+@api_bp.route('/equipment/available', methods=['GET'])
+def get_available_equipment():
+    """
+    Get all equipment currently available for renting.
+
+    Args:
+      None
+
+    Returns:
+      tuple: JSON array of available equipment and HTTP 200.
+    """
+    return jsonify(rental_service.get_available_equipment()), 200
 
 
 @api_bp.route('/equipment', methods=['POST'])
@@ -141,7 +164,7 @@ def create_equipment():
     )
 
     if errors:
-        return _json_error(_first_error(errors), 400)
+      return _json_error(_first_error(errors), 400, errors)
 
     try:
         equipment = equipment_service.create_equipment(validated)
@@ -280,7 +303,7 @@ def update_equipment(equipment_id):
     )
 
     if errors:
-        return _json_error(_first_error(errors), 400)
+      return _json_error(_first_error(errors), 400, errors)
 
     try:
         updated_equipment = equipment_service.update_equipment(
@@ -444,7 +467,7 @@ def create_customer():
 
     errors = customer_service.validate_customer_data(data, for_api=True)
     if errors:
-        return _json_error(_first_error(errors), 400)
+      return _json_error(_first_error(errors), 400, errors)
 
     try:
         customer = customer_service.create_customer(
@@ -577,7 +600,7 @@ def update_customer(customer_id):
     )
 
     if errors:
-        return _json_error(_first_error(errors), 400)
+      return _json_error(_first_error(errors), 400, errors)
 
     try:
         updated_customer = customer_service.update_customer(
@@ -694,7 +717,7 @@ def get_rentals():
               total_cost:
                 type: number
     """
-    return jsonify(rental_service.get_all_rentals()), 200
+    return jsonify(rental_service.get_all_rentals_view()), 200
 
 
 @api_bp.route('/rentals', methods=['POST'])
@@ -760,7 +783,7 @@ def create_rental():
 
     errors, validated = rental_service.validate_rental_data(data, for_api=True)
     if errors:
-        return _json_error(_first_error(errors), 400)
+      return _json_error(_first_error(errors), 400, errors)
 
     if rental_service.check_overlap_booking(
         validated['equipment_id'],
@@ -824,6 +847,91 @@ def get_rental_by_id(rental_id):
     return jsonify(rental), 200
 
 
+@api_bp.route('/rentals/<int:rental_id>', methods=['PUT'])
+def update_rental(rental_id):
+    """
+    Update an existing rental record.
+
+    Args:
+      rental_id: Rental identifier.
+
+    Returns:
+      tuple: JSON updated rental object and HTTP 200.
+    """
+    existing_rental = rental_service.get_rental_by_id(rental_id)
+    if not existing_rental:
+        return _json_error("Rental not found", 404)
+
+    data = _json_payload()
+    if not data:
+        return _json_error("Invalid or missing JSON body", 400)
+
+    update_data = {
+        "equipment_id": data.get("equipment_id", existing_rental["equipment_id"]),
+        "customer_id": data.get("customer_id", existing_rental["customer_id"]),
+        "start_date": data.get("start_date", existing_rental["start_date"]),
+        "end_date": data.get("end_date", existing_rental["end_date"]),
+        "status": data.get("status", existing_rental.get("status", "active")),
+    }
+
+    errors, validated = rental_service.validate_rental_data(
+        update_data,
+        for_api=True,
+    )
+    if errors:
+        return _json_error(_first_error(errors), 400, errors)
+
+    if rental_service.check_overlap_booking(
+        validated["equipment_id"],
+        validated["start_date"],
+        validated["end_date"],
+        exclude_rental_id=rental_id,
+    ):
+        overlap_errors = {
+            "date_range": (
+                "The selected equipment is already booked for "
+                "the specified dates."
+            )
+        }
+        return _json_error(_first_error(overlap_errors), 400, overlap_errors)
+
+    try:
+        rental = rental_service.update_rental(
+            rental_id,
+            validated["equipment_id"],
+            validated["customer_id"],
+            validated["start_date"],
+            validated["end_date"],
+            validated["status"],
+        )
+    except Exception as exc:
+        return _json_error(f"Unable to update rental: {exc}", 422)
+
+    return jsonify(rental), 200
+
+
+@api_bp.route('/rentals/<int:rental_id>', methods=['DELETE'])
+def delete_rental(rental_id):
+    """
+    Delete a rental record.
+
+    Args:
+      rental_id: Rental identifier.
+
+    Returns:
+      tuple: JSON success message and HTTP 200, or JSON error body.
+    """
+    try:
+        deleted = rental_service.delete_rental(rental_id)
+    except Exception as exc:
+        return _json_error(f"Unable to delete rental: {exc}", 422)
+
+    if not deleted:
+        return _json_error("Rental not found", 404)
+
+    return jsonify({"message": "Rental deleted successfully"}), 200
+
+
 @api_bp.route('/rentals/<int:rental_id>/return', methods=['PUT'])
 def return_rental(rental_id):
     """
@@ -873,3 +981,25 @@ def return_rental(rental_id):
         return _json_error("Rental not found", 404)
 
     return jsonify(rental), 200
+
+
+@api_bp.route('/dashboard/summary', methods=['GET'])
+def get_dashboard_summary():
+    """
+    Get dashboard counters and recent-rental data.
+
+    Returns:
+      tuple: JSON dashboard summary and HTTP 200.
+    """
+    return jsonify(dashboard_service.get_dashboard_summary()), 200
+
+
+@api_bp.route('/reports/summary', methods=['GET'])
+def get_reports_summary():
+    """
+    Get reports analytics summary.
+
+    Returns:
+      tuple: JSON reports summary and HTTP 200.
+    """
+    return jsonify(report_service.get_reports_summary()), 200

@@ -20,8 +20,8 @@
 (V) AC-01 GET /equipment/new renders an empty form; GET /equipment/<id>/edit pre-fills fields with current data
 (V) AC-02 POST /equipment/new on success: creates the item, assigns an auto-increment ID, redirects to equipment list with a flash success message
 (V) AC-03 POST /equipment/<id>/edit on success: updates the item, redirects to detail page with flash message
-AC-04 Submitting with blank required fields re-renders the form with inline error messages (e.g. 'Name is required') and does NOT clear other valid input
-AC-05 Daily Rate and Quantity inputs validate to positive numbers server-side (not just HTML5 min attribute)
+[todo] AC-04 Submitting with blank required fields re-renders the form with [todo] inline error messages (e.g. 'Name is required') and does NOT clear other valid input
+[todo] AC-05 Daily Rate and Quantity inputs validate to positive numbers server-side (not just HTML5 min attribute)
 (V) AC-06 Same form.html template is used for both create and edit modes via Jinja2 conditional rendering
 
 (V) AC-01 GET /customers returns HTTP 200 with a full customer list sorted by name
@@ -43,24 +43,24 @@ AC-05 Daily Rate and Quantity inputs validate to positive numbers server-side (n
 (V) AC-04 Page renders correctly even when the database has no rentals (zero-state graceful handling)
 
 (V) AC-01 GET /api/docs renders the Swagger UI with all endpoints documented
-AC-02 Every endpoint includes: HTTP method, URL, description, request body schema (for POST/PUT), and response schema
-AC-03 All JSON API endpoints return Content-Type: application/json
-AC-04 Successful POST returns HTTP 201; successful GET returns 200; successful DELETE returns 200 or 204
-AC-05 Error responses (404, 400, 422) return a JSON body: { 'error': 'message' }
-AC-06 The API can be tested directly from the Swagger UI (Try it out button works)
-AC-07 Each route function has a Python docstring describing its purpose, parameters, and return value
+[todo] AC-02 Every endpoint includes: HTTP method, URL, description, request body schema (for POST/PUT), and response schema
+[todo] AC-03 All JSON API endpoints return Content-Type: application/json
+[todo] AC-04 Successful POST returns HTTP 201; successful GET returns 200; successful DELETE returns 200 or 204
+[todo] AC-05 Error responses (404, 400, 422) return a JSON body: { 'error': 'message' }
+[todo] AC-06 The API can be tested directly from the Swagger UI (Try it out button works)
+[todo] AC-07 Each route function has a Python docstring describing its purpose, parameters, and return value
 
 (V) AC-01 docker build -t techrent-pro . completes without errors on the instructor's machine (macOS/Linux)
-AC-02 docker run -p 5000:5000 techrent-pro starts the app and the dashboard loads in browser
-AC-03 The Docker Hub repo is public and the docker pull command in README.md works without login
-AC-04 requirements.txt is complete: all imports used in the code are listed with pinned versions
-AC-05 The image size is under 500 MB (use python:3.11-slim, not python:3.11)
-AC-06 No sensitive data (API keys, passwords) are baked into the image
+(V) AC-02 docker run -p 5000:5000 techrent-pro starts the app and the dashboard loads in browser
+[todo] AC-03 The Docker Hub repo is public and the docker pull command in README.md works without login
+(V) AC-04 requirements.txt is complete: all imports used in the code are listed with pinned versions
+(V) AC-05 The image size is under 500 MB (use python:3.11-slim, not python:3.11)
+(V) AC-06 No sensitive data (API keys, passwords) are baked into the image
 
 
 
-•	Include a TEAM.md file in the zip with: full names, IDs, Git history screenshot, and a brief sentence per student describing their main contribution.
-•	Zip file must follow the naming convention exactly: ID1_FirstStudentLastname_ID2_SecondStudentLastName_FLASK.zip
+•[todo]	Include a TEAM.md file in the zip with: full names, IDs, Git history screenshot, and a brief sentence per student describing their main contribution.
+•[todo]	Zip file must follow the naming convention exactly: ID1_FirstStudentLastname_ID2_SecondStudentLastName_FLASK.zip
 
 
 Dashboard Required UI Elements
@@ -85,8 +85,8 @@ Add / Edit Equipment  Required UI Elements
 •(V) 	Form fields: Name (text), Category (select with predefined + 'Other' option), Description (textarea), Daily Rate (number, min $1), Quantity (number, min 1), Available (checkbox)
 •(V)	Submit button label changes based on mode: 'Add Equipment' vs 'Save Changes'
 •(V)	Cancel button links back to the equipment list
-•	Server-side validation: all fields required; rate and quantity must be positive numbers
-•	On validation failure, re-render the form with field-level error messages and preserve user input (no data loss on error)
+•[todo]	Server-side validation: all fields required; rate and quantity must be positive numbers
+•[todo]	On validation failure, re-render the form with field-level error messages and preserve user input (no data loss on error)
 
 Customer List Required UI Elements 
 •(V)	Table: ID, Name, Email, Phone, Registered Date, Actions (Edit, Delete)
@@ -95,34 +95,34 @@ Customer List Required UI Elements
 
 Customer Registration Required UI Elements 
 •(V)	Fields: Full Name, Email, Phone, (created_at auto-set server-side)
-•	Email uniqueness validation: reject duplicate emails with a clear error message
+•(V)	Email uniqueness validation: reject duplicate emails with a clear error message
 
 Rentals List Required UI Elements
 •(V)	Table: Rental ID, Customer Name, Equipment Name, Start Date, End Date, Status (badge), Total Cost
-•	Filter by status dropdown (All / Active / Returned / Overdue)
+•(V)	Filter by status dropdown (All / Active / Returned / Overdue)
 •(V)	A 'Mark as Returned' button on Active rows
 
 Rentals New Required UI Elements
 •(V)	Customer dropdown (populated from all customers)
-•(XV)	Equipment dropdown (populated from available equipment only — available=True AND quantity > active rentals)
-•(XV)	Start Date, End Date (date pickers; end must be after start)
-•(XV)	Auto-compute and display Total Cost when both dates are selected (daily_rate * number of days)
-•	Validation: no double-booking — same equipment cannot be rented twice in an overlapping period
+•(V)	Equipment dropdown (populated from available equipment only — available=True AND quantity > active rentals)
+•[todo]	Start Date, End Date (date pickers; end must be after start)
+•[todo]	Auto-compute and display Total Cost when both dates are selected (daily_rate * number of days)
+•(V)	Validation: no double-booking — same equipment cannot be rented twice in an overlapping period
 
 Reports Required UI Elements
-•	Revenue summary: total revenue (sum of all returned rental costs), active rental revenue (sum of active)
-•	Top 3 most-rented equipment items (by number of rentals)
-•	Top 3 customers by total spend
-•	Rentals by status: a simple visual bar (CSS width % based on count vs total)
+•(V)	Revenue summary: total revenue (sum of all returned rental costs), active rental revenue (sum of active)
+•(V)	Top 3 most-rented equipment items (by number of rentals)
+•(V)	Top 3 customers by total spend
+•(V)	Rentals by status: a simple visual bar (CSS width % based on count vs total)
 
 
 
 5.1  Template Inheritance (Mandatory)
 Every HTML page must extend base.html using the block/extends pattern. base.html must define the following named blocks:
-•	{% block title %} — used to set the <title> tag per page
-•	{% block nav_active_* %} — used to highlight the active navigation item
-•	{% block content %} — the main page body
-•	{% block scripts %} — optional per-page JavaScript
+•(V)	{% block title %} — used to set the <title> tag per page
+•[todo]	{% block nav_active_* %} — used to highlight the active navigation item
+•(V)	{% block content %} — the main page body
+•(V)	{% block scripts %} — optional per-page JavaScript
 
 
 5.2  Other Required Jinja2 Features
@@ -132,8 +132,8 @@ Feature	Where It Must Appear
 {{ variable }}	Every template that displays data
 {{ variable | filter }}	At least 2 Jinja filters used (e.g. |upper, |round(2), |length, |default)
 {% with messages %} flash()	Success and error flash messages on form submissions
-{% include %} or Jinja macro	At least one reusable component (e.g. status badge macro)
-url_for()	All href links and form actions use url_for — no hard-coded URLs
+[todo] {% include %} or Jinja macro	At least one reusable component (e.g. status badge macro)
+(V) url_for()	All href links and form actions use url_for — no hard-coded URLs
 
 
 7.2  Code Style
@@ -145,4 +145,4 @@ url_for()	All href links and form actions use url_for — no hard-coded URLs
 7.3  Error Handling
 •(V)	Register custom error handlers for 404 (Not Found) and 500 (Internal Server Error)
 •(V)	API endpoints must never return an HTML error page — they must always return JSON
-•	Wrap database write operations in try/except; return HTTP 422 or 400 with a JSON error body on failure
+•[todo]	Wrap database write operations in try/except; return HTTP 422 or 400 with a JSON error body on failure

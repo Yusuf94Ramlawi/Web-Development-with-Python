@@ -10,18 +10,21 @@
 <div class="alert alert-danger" role="alert">{{ errors.date_range }}</div>
 {% elif errors and errors.date_format %}
 <div class="alert alert-danger" role="alert">{{ errors.date_format }}</div>
+{% elif errors and errors.form %}
+<div class="alert alert-danger" role="alert">{{ errors.form }}</div>
 {% endif %}
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-        <form method="post" action="{{ form_action or '/rentals/new' }}">
+        <form method="post" action="{{ form_action or url_for('rentals.new_rental') }}">
             <div class="mb-3">
                 <label for="customer_id" class="form-label">Customer:</label>
                 <select id="customer_id" name="customer_id"
                     class="form-select {% if errors and errors.customer_id %}is-invalid{% endif %}" required>
                     <option value="">Select customer</option>
                     {% for customer in customers %}
-                    <option value="{{ customer.id }}" {% if rental and rental.customer_id|int==customer.id %}selected{% endif %}>
+                    <option value="{{ customer.id }}" {% if rental and rental.customer_id|int==customer.id %}selected{%
+                        endif %}>
                         {{ customer.name }}
                     </option>
                     {% endfor %}
@@ -37,7 +40,8 @@
                     class="form-select {% if errors and errors.equipment_id %}is-invalid{% endif %}" required>
                     <option value="">Select equipment</option>
                     {% for item in equipment %}
-                    <option value="{{ item.id }}" data-daily-rate="{{ item.daily_rate }}" {% if rental and rental.equipment_id|int==item.id %}selected{% endif %}>
+                    <option value="{{ item.id }}" data-daily-rate="{{ item.daily_rate }}" {% if rental and
+                        rental.equipment_id|int==item.id %}selected{% endif %}>
                         {{ item.name }} ({{ item.category }})
                     </option>
                     {% endfor %}
@@ -75,7 +79,7 @@
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">{{ submit_label or 'Save rental' }}</button>
-                <a href="/rentals" class="btn btn-outline-secondary">Cancel</a>
+                <a href="{{ url_for('rentals.get_all_rentals') }}" class="btn btn-outline-secondary">Cancel</a>
             </div>
         </form>
     </div>

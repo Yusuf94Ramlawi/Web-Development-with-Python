@@ -5,11 +5,11 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h2 class="fw-semibold">Customers</h2>
-    <a href="/customers/add" class="btn btn-primary">+ Register Customer</a>
+    <a href="{{ url_for('customers.add_customer') }}" class="btn btn-primary">+ Register Customer</a>
 </div>
 
 
-<form method="GET" action="/customers" class="row g-2 align-items-end mb-4">
+<form method="GET" action="{{ url_for('customers.customers') }}" class="row g-2 align-items-end mb-4">
     <div class="col-auto">
         <input type="text" name="q" value="{{ search_query or '' }}" class="form-control"
             placeholder="Search by name" />
@@ -43,11 +43,13 @@
                         <td>{{ customer.phone }}</td>
                         <td>{{ customer.created_at[:10] }}</td>
                         <td>
-                            <a href="/customers/edit/{{ customer.id }}" class="btn btn-sm btn-outline-primary me-1"
-                                title="Edit">
+                            <a href="{{ url_for('customers.edit_customer', id=customer.id) }}"
+                                class="btn btn-sm btn-outline-primary me-1" title="Edit">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <form action="/customers/delete/{{ customer.id }}" method="post" class="d-inline">
+                            <form action="{{ url_for('customers.delete_customer', id=customer.id) }}" method="post"
+                                class="d-inline">
+                                <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-sm btn-danger" title="Delete">
                                     <i class="bi bi-trash"></i>
                                 </button>

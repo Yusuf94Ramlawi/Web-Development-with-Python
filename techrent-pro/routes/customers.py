@@ -1,7 +1,6 @@
-import db
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 from utils.pagination import Paginator
-from services import customer_service
+from services import frontend_api_service
 
 customers_bp = Blueprint("customers", __name__, url_prefix="/customers")
 
@@ -18,7 +17,13 @@ def customers():
         Response: Rendered customers list page.
     """
     q = request.args.get('q', '').strip().lower()
-    customers = customer_service.get_all_customers()
+    status_code, payload = frontend_api_service.get('/api/customers')
+    customers = payload if status_code == 200 and isinstance(
+        payload, list) else []
+
+    if status_code != 200:
+        flash('Unable to load customers from API.', 'danger')
+
     if q:
         customers = [c for c in customers if q in c['name'].lower()
                      or q in c['email'].lower()]
@@ -40,24 +45,25 @@ def add_customer():
         Response: Customer form or redirect to customer list on success.
     """
     if request.method == 'POST':
-        form_data = request.form
-        name = form_data.get('name', '').strip()
-        email = form_data.get('email', '').strip()
-        phone = form_data.get('phone', '').strip()
+        form_data = {
+            'name': request.form.get('name', '').strip(),
+            'email': request.form.get('email', '').strip(),
+            'phone': request.form.get('phone', '').strip(),
+        }
 
-        # Server-side validation using service layer
-        errors = customer_service.validate_customer_data(
-            {'name': name, 'email': email, 'phone': phone}
+        status_code, payload = frontend_api_service.post(
+            '/api/customers',
+            json_data=form_data,
         )
 
-        if errors:
+        if status_code != 201:
+            errors = frontend_api_service.extract_errors(payload)
             return render_template(
                 'customers/form.html',
-                form_data={'name': name, 'email': email, 'phone': phone},
+                form_data=form_data,
                 errors=errors
             ), 400
 
-        customer_service.create_customer(name, email, phone)
         flash('Customer registered successfully!', 'success')
         return redirect(url_for('customers.customers'))
     return render_template('customers/form.html', form_data={}, errors={})
@@ -74,23 +80,25 @@ def edit_customer(id):
     Returns:
         Response: Customer form or redirect to customer list on success.
     """
-    customer = customer_service.get_customer_by_id(id)
-    if not customer:
-        return render_template('404.html', message="Customer not found."), 404
+    status_code, customer = frontend_api_service.get(f'/api/customers/{id}')
+    if status_code != 200:
+        message = customer.get('error', 'Customer not found.')
+        return render_template('404.html', message=message), 404
 
     if request.method == 'POST':
-        name = request.form.get('name', '').strip()
-        email = request.form.get('email', '').strip()
-        phone = request.form.get('phone', '').strip()
+        form_data = {
+            'name': request.form.get('name', '').strip(),
+            'email': request.form.get('email', '').strip(),
+            'phone': request.form.get('phone', '').strip(),
+        }
 
-        # Server-side validation using service layer
-        errors = customer_service.validate_customer_data(
-            {'name': name, 'email': email, 'phone': phone},
-            customer_id=id
+        update_status, payload = frontend_api_service.put(
+            f'/api/customers/{id}',
+            json_data=form_data,
         )
 
-        if errors:
-            form_data = {'name': name, 'email': email, 'phone': phone}
+        if update_status != 200:
+            errors = frontend_api_service.extract_errors(payload)
             return render_template(
                 'customers/form.html',
                 form_data=form_data,
@@ -98,7 +106,6 @@ def edit_customer(id):
                 errors=errors
             ), 400
 
-        customer_service.update_customer(id, name, email, phone)
         flash('Customer updated successfully!', 'success')
         return redirect(url_for('customers.customers'))
 
@@ -110,7 +117,7 @@ def edit_customer(id):
     )
 
 
-@customers_bp.route('/delete/<int:id>', methods=['POST'])
+@customers_bp.route('/delete/<int:id>', methods=['DELETE'])
 def delete_customer(id):
     """
     Delete a customer.
@@ -121,9 +128,9 @@ def delete_customer(id):
     Returns:
         Response: Redirect to customer list with flash message.
     """
-    success, message = customer_service.delete_customer(id)
-    if success:
-        flash(message, 'success')
+    status_code, payload = frontend_api_service.delete(f'/api/customers/{id}')
+    if status_code == 200:
+        flash(payload.get('message', 'Customer deleted successfully'), 'success')
     else:
-        flash(message, 'danger')
+        flash(payload.get('error', 'Unable to delete customer'), 'danger')
     return redirect(url_for('customers.customers'))
